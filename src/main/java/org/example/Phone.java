@@ -31,15 +31,15 @@ public class Phone {
      */
     public Phone(String brand, String model, double price, int year, int storage, 
                  int batteryCapacity, String operatingSystem, double weight, String color) {
-        this.brand = brand;
-        this.model = model;
-        this.price = price;
-        this.year = year;
-        this.storage = storage;
-        this.batteryCapacity = batteryCapacity;
-        this.operatingSystem = operatingSystem;
-        this.weight = weight;
-        this.color = color;
+        setBrand(brand);
+        setModel(model);
+        setPrice(price);
+        setYear(year);
+        setStorage(storage);
+        setBatteryCapacity(batteryCapacity);
+        setOperatingSystem(operatingSystem);
+        setWeight(weight);
+        setColor(color);
     }
 
     public String getBrand() {
@@ -47,6 +47,9 @@ public class Phone {
     }
 
     public void setBrand(String brand) {
+        if (brand == null || brand.trim().isEmpty()) {
+            throw new IllegalArgumentException("Бренд не може бути порожнім");
+        }
         this.brand = brand;
     }
 
@@ -55,6 +58,9 @@ public class Phone {
     }
 
     public void setModel(String model) {
+        if (model == null || model.trim().isEmpty()) {
+            throw new IllegalArgumentException("Модель не може бути порожньою");
+        }
         this.model = model;
     }
 
@@ -63,6 +69,9 @@ public class Phone {
     }
 
     public void setPrice(double price) {
+        if (price < 0) {
+            throw new IllegalArgumentException("Ціна не може бути від'ємною");
+        }
         this.price = price;
     }
 
@@ -71,6 +80,9 @@ public class Phone {
     }
 
     public void setYear(int year) {
+        if (year < 1990 || year > 2030) {
+            throw new IllegalArgumentException("Рік має бути в межах від 1990 до 2030");
+        }
         this.year = year;
     }
 
@@ -79,6 +91,9 @@ public class Phone {
     }
 
     public void setStorage(int storage) {
+        if (storage <= 0) {
+            throw new IllegalArgumentException("Обсяг пам'яті має бути більшим за 0");
+        }
         this.storage = storage;
     }
 
@@ -87,6 +102,9 @@ public class Phone {
     }
 
     public void setBatteryCapacity(int batteryCapacity) {
+        if (batteryCapacity <= 0) {
+            throw new IllegalArgumentException("Ємність батареї має бути більшою за 0");
+        }
         this.batteryCapacity = batteryCapacity;
     }
 
@@ -95,6 +113,9 @@ public class Phone {
     }
 
     public void setOperatingSystem(String operatingSystem) {
+        if (operatingSystem == null || operatingSystem.trim().isEmpty()) {
+            throw new IllegalArgumentException("Операційна система не може бути порожньою");
+        }
         this.operatingSystem = operatingSystem;
     }
 
@@ -103,6 +124,9 @@ public class Phone {
     }
 
     public void setWeight(double weight) {
+        if (weight <= 0) {
+            throw new IllegalArgumentException("Вага має бути більшою за 0");
+        }
         this.weight = weight;
     }
 
@@ -111,6 +135,9 @@ public class Phone {
     }
 
     public void setColor(String color) {
+        if (color == null || color.trim().isEmpty()) {
+            throw new IllegalArgumentException("Колір не може бути порожнім");
+        }
         this.color = color;
     }
 
