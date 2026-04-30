@@ -42,6 +42,27 @@ public class Phone {
         setColor(color);
     }
 
+    /**
+     * Конструктор копіювання для створення нового об'єкта на основі існуючого.
+     *
+     * @param other об'єкт класу Phone, який потрібно скопіювати
+     * @throws IllegalArgumentException якщо переданий об'єкт є null
+     */
+    public Phone(Phone other) {
+        if (other == null) {
+            throw new IllegalArgumentException("Об'єкт для копіювання не може бути null");
+        }
+        this.brand = other.brand;
+        this.model = other.model;
+        this.price = other.price;
+        this.year = other.year;
+        this.storage = other.storage;
+        this.batteryCapacity = other.batteryCapacity;
+        this.operatingSystem = other.operatingSystem;
+        this.weight = other.weight;
+        this.color = other.color;
+    }
+
     public String getBrand() {
         return brand;
     }
