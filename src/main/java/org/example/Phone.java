@@ -12,11 +12,11 @@ public class Phone {
     private int year;
     private int storage;
     private int batteryCapacity;
-    private String operatingSystem;
+    private OperatingSystem operatingSystem;
     private double weight;
-    private String color;
+    private Color color;
+    private Processor processor;
     private static int count = 0;
-
 
     /**
      * Конструктор для ініціалізації об'єкта Phone.
@@ -30,9 +30,12 @@ public class Phone {
      * @param operatingSystem операційна система
      * @param weight          вага
      * @param color           колір
+     * @param processor       процесор (агрегація)
      */
-    public Phone(String brand, String model, double price, int year, int storage, 
-                 int batteryCapacity, String operatingSystem, double weight, String color) {
+    public Phone(String brand, String model, double price, int year, int storage,
+            int batteryCapacity, OperatingSystem operatingSystem, double weight, Color color, Processor processor) {
+
+
         setBrand(brand);
         setModel(model);
         setPrice(price);
@@ -42,8 +45,10 @@ public class Phone {
         setOperatingSystem(operatingSystem);
         setWeight(weight);
         setColor(color);
+        setProcessor(processor);
         count++;
     }
+
 
     /**
      * Конструктор копіювання для створення нового об'єкта на основі існуючого.
@@ -64,8 +69,10 @@ public class Phone {
         this.operatingSystem = other.operatingSystem;
         this.weight = other.weight;
         this.color = other.color;
+        this.processor = new Processor(other.processor);
         count++;
     }
+
 
     /**
      * Повертає кількість створених об'єктів класу Phone.
@@ -142,13 +149,20 @@ public class Phone {
         this.batteryCapacity = batteryCapacity;
     }
 
-    public String getOperatingSystem() {
+    /**
+     * Повертає операційну систему телефону.
+     */
+    public OperatingSystem getOperatingSystem() {
         return operatingSystem;
     }
 
-    public void setOperatingSystem(String operatingSystem) {
-        if (operatingSystem == null || operatingSystem.trim().isEmpty()) {
-            throw new IllegalArgumentException("Операційна система не може бути порожньою");
+    /**
+     * Встановлює операційну систему телефону.
+     */
+    public void setOperatingSystem(OperatingSystem operatingSystem) {
+
+        if (operatingSystem == null) {
+            throw new IllegalArgumentException("Операційна система не може бути null");
         }
         this.operatingSystem = operatingSystem;
     }
@@ -164,31 +178,51 @@ public class Phone {
         this.weight = weight;
     }
 
-    public String getColor() {
+    /**
+     * Повертає колір телефону.
+     */
+    public Color getColor() {
         return color;
     }
 
-    public void setColor(String color) {
-        if (color == null || color.trim().isEmpty()) {
-            throw new IllegalArgumentException("Колір не може бути порожнім");
+    /**
+     * Встановлює колір телефону.
+     */
+    public void setColor(Color color) {
+        if (color == null) {
+            throw new IllegalArgumentException("Колір не може бути null");
         }
         this.color = color;
     }
 
+    public Processor getProcessor() {
+        return processor;
+    }
+
+    public void setProcessor(Processor processor) {
+        if (processor == null) {
+            throw new IllegalArgumentException("Процесор не може бути null");
+        }
+        this.processor = processor;
+    }
+
+
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         Phone phone = (Phone) o;
         return Double.compare(phone.price, price) == 0 &&
-               year == phone.year &&
-               storage == phone.storage &&
-               batteryCapacity == phone.batteryCapacity &&
-               Double.compare(phone.weight, weight) == 0 &&
-               Objects.equals(brand, phone.brand) &&
-               Objects.equals(model, phone.model) &&
-               Objects.equals(operatingSystem, phone.operatingSystem) &&
-               Objects.equals(color, phone.color);
+                year == phone.year &&
+                storage == phone.storage &&
+                batteryCapacity == phone.batteryCapacity &&
+                Double.compare(phone.weight, weight) == 0 &&
+                Objects.equals(brand, phone.brand) &&
+                Objects.equals(model, phone.model) &&
+                Objects.equals(operatingSystem, phone.operatingSystem) &&
+                Objects.equals(color, phone.color);
     }
 
     @Override
@@ -208,6 +242,8 @@ public class Phone {
                 ", operatingSystem='" + operatingSystem + '\'' +
                 ", weight=" + weight +
                 ", color='" + color + '\'' +
+                ", processor=" + processor +
                 '}';
     }
+
 }
