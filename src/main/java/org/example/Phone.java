@@ -15,6 +15,8 @@ public class Phone {
     private String operatingSystem;
     private double weight;
     private String color;
+    private static int count = 0;
+
 
     /**
      * Конструктор для ініціалізації об'єкта Phone.
@@ -40,6 +42,7 @@ public class Phone {
         setOperatingSystem(operatingSystem);
         setWeight(weight);
         setColor(color);
+        count++;
     }
 
     /**
@@ -61,6 +64,16 @@ public class Phone {
         this.operatingSystem = other.operatingSystem;
         this.weight = other.weight;
         this.color = other.color;
+        count++;
+    }
+
+    /**
+     * Повертає кількість створених об'єктів класу Phone.
+     *
+     * @return кількість створених об'єктів
+     */
+    public static int getCount() {
+        return count;
     }
 
     public String getBrand() {

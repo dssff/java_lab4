@@ -22,6 +22,7 @@ public class Main {
             System.out.println("1. Створити новий телефон");
             System.out.println("2. Вивести всі телефони");
             System.out.println("3. Вийти");
+            System.out.println("4. Кількість створених об'єктів");
             System.out.print("Оберіть опцію: ");
 
             String choice = scanner.nextLine();
@@ -36,6 +37,9 @@ public class Main {
                 case "3":
                     System.out.println("Завершення роботи. На все добре!");
                     running = false;
+                    break;
+                case "4":
+                    System.out.println("\nВсього створено об'єктів Phone: " + Phone.getCount());
                     break;
                 default:
                     System.out.println("Помилка: Невідома опція. Спробуйте '1', '2' або '3'.");
