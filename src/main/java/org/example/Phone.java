@@ -16,7 +16,6 @@ public class Phone {
     private double weight;
     private Color color;
     private Processor processor;
-    private static int count = 0;
 
     /**
      * Конструктор для ініціалізації об'єкта Phone.
@@ -46,7 +45,6 @@ public class Phone {
         setWeight(weight);
         setColor(color);
         setProcessor(processor);
-        count++;
     }
 
 
@@ -70,18 +68,9 @@ public class Phone {
         this.weight = other.weight;
         this.color = other.color;
         this.processor = new Processor(other.processor);
-        count++;
     }
 
 
-    /**
-     * Повертає кількість створених об'єктів класу Phone.
-     *
-     * @return кількість створених об'єктів
-     */
-    public static int getCount() {
-        return count;
-    }
 
     public String getBrand() {
         return brand;

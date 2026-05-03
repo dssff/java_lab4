@@ -48,14 +48,6 @@ class PhoneTest {
         assertEquals(original.getProcessor().getModel(), copy.getProcessor().getModel());
     }
 
-    @Test
-    void shouldIncrementStaticCounter() {
-        int initialCount = Phone.getCount();
-        Processor processor = new Processor("A19", 8, 3.8);
-        new Phone("Apple", "iPhone 17", 799.99, 2025, 256, 3200, OperatingSystem.IOS, 170.5, Color.BLACK, processor);
-        
-        assertEquals(initialCount + 1, Phone.getCount());
-    }
 
     @Test
     void shouldThrowExceptionWhenProcessorIsNull() {
