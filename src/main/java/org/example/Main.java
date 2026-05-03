@@ -8,10 +8,8 @@ public class Main {
         ArrayList<Phone> phones = new ArrayList<>();
 
         // Початкові дані для демонстрації
-        phones.add(new Phone("Apple", "iPhone 17", 799.99, 2025, 256, 3200, OperatingSystem.IOS, 170.5, Color.BLACK, 
-                new Processor("A19 Bionic", 8, 3.78)));
-        phones.add(new Phone("Samsung", "Galaxy S23", 900.00, 2024, 128, 3900, OperatingSystem.ANDROID, 168.0, Color.WHITE,
-                new Processor("Snapdragon 8 Gen 2", 8, 3.36)));
+        phones.add(new Phone("Apple", "iPhone 17", 799.99, 2025, 256, 3200, OperatingSystem.IOS, 170.5, Color.BLACK));
+        phones.add(new Phone("Samsung", "Galaxy S23", 900.00, 2024, 128, 3900, OperatingSystem.ANDROID, 168.0, Color.WHITE));
 
 
 
@@ -84,17 +82,8 @@ public class Main {
                 System.out.println("Оберіть колір (BLACK, WHITE, SILVER, GOLD, BLUE, RED, GREEN): ");
                 Color color = Color.valueOf(scanner.nextLine().toUpperCase());
 
-                System.out.println("\n--- Дані процесора ---");
-                System.out.print("Модель процесора: ");
-                String procModel = scanner.nextLine();
-                System.out.print("Кількість ядер: ");
-                int procCores = Integer.parseInt(scanner.nextLine());
-                System.out.print("Частота (ГГц): ");
-                double procFreq = Double.parseDouble(scanner.nextLine());
-                Processor processor = new Processor(procModel, procCores, procFreq);
-
                 // Спроба створення об'єкта
-                Phone newPhone = new Phone(brand, model, price, year, storage, batteryCapacity, os, weight, color, processor);
+                Phone newPhone = new Phone(brand, model, price, year, storage, batteryCapacity, os, weight, color);
 
 
                 phones.add(newPhone);

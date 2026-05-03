@@ -15,7 +15,6 @@ public class Phone {
     private OperatingSystem operatingSystem;
     private double weight;
     private Color color;
-    private Processor processor;
 
     /**
      * Конструктор для ініціалізації об'єкта Phone.
@@ -32,7 +31,7 @@ public class Phone {
      * @param processor       процесор (агрегація)
      */
     public Phone(String brand, String model, double price, int year, int storage,
-            int batteryCapacity, OperatingSystem operatingSystem, double weight, Color color, Processor processor) {
+            int batteryCapacity, OperatingSystem operatingSystem, double weight, Color color) {
 
 
         setBrand(brand);
@@ -44,7 +43,6 @@ public class Phone {
         setOperatingSystem(operatingSystem);
         setWeight(weight);
         setColor(color);
-        setProcessor(processor);
     }
 
 
@@ -67,7 +65,6 @@ public class Phone {
         this.operatingSystem = other.operatingSystem;
         this.weight = other.weight;
         this.color = other.color;
-        this.processor = new Processor(other.processor);
     }
 
 
@@ -184,16 +181,6 @@ public class Phone {
         this.color = color;
     }
 
-    public Processor getProcessor() {
-        return processor;
-    }
-
-    public void setProcessor(Processor processor) {
-        if (processor == null) {
-            throw new IllegalArgumentException("Процесор не може бути null");
-        }
-        this.processor = processor;
-    }
 
 
     @Override
@@ -231,7 +218,6 @@ public class Phone {
                 ", operatingSystem='" + operatingSystem + '\'' +
                 ", weight=" + weight +
                 ", color='" + color + '\'' +
-                ", processor=" + processor +
                 '}';
     }
 
