@@ -42,4 +42,31 @@ class PhoneTest {
     }
 
 
+    @Test
+    void shouldCreateSmartPhoneWithSpecificData() {
+        SmartPhone sp = new SmartPhone("Apple", "iPhone 15", 999.99, 2023, 128, 3349, OperatingSystem.IOS, 171.0, Color.BLACK, 48.0, true);
+        assertEquals(48.0, sp.getCameraMegapixels());
+        assertTrue(sp.isHasNFC());
+        assertEquals("Apple", sp.getBrand());
+    }
+
+    @Test
+    void shouldCreateKeypadPhoneWithSpecificData() {
+        KeypadPhone kp = new KeypadPhone("Samsung", "B310E", 30.0, 2014, 1, 800, OperatingSystem.OTHER, 75.0, Color.WHITE, true, true);
+        assertTrue(kp.isHasDualSim());
+        assertTrue(kp.isHasFlashlight());
+        assertEquals("Samsung", kp.getBrand());
+    }
+
+    @Test
+    void testPolymorphismInList() {
+        java.util.ArrayList<Phone> list = new java.util.ArrayList<>();
+        list.add(new Phone("Nokia", "1100", 20.0, 2003, 1, 850, OperatingSystem.OTHER, 93.0, Color.SILVER));
+        list.add(new SmartPhone("Apple", "iPhone 15", 999.99, 2023, 128, 3349, OperatingSystem.IOS, 171.0, Color.BLACK, 48.0, true));
+        
+        assertTrue(list.get(0) instanceof Phone);
+        assertTrue(list.get(1) instanceof SmartPhone);
+        assertEquals("Nokia", list.get(0).getBrand());
+        assertEquals("Apple", list.get(1).getBrand());
+    }
 }
