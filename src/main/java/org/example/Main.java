@@ -65,6 +65,14 @@ public class Main {
                     createKeypadPhone(scanner, phones);
                     backToMain = true;
                     break;
+                case "4":
+                    createSatellitePhone(scanner, phones);
+                    backToMain = true;
+                    break;
+                case "5":
+                    createFoldablePhone(scanner, phones);
+                    backToMain = true;
+                    break;
                 case "0":
                     backToMain = true;
                     break;
@@ -118,6 +126,48 @@ public class Main {
                     base.getColor(), dualSim, flashlight);
             phones.add(kp);
             System.out.println("Успіх: KeypadPhone додано!");
+        } catch (Exception e) {
+            System.out.println("Помилка: " + e.getMessage());
+        }
+    }
+
+    private static void createSatellitePhone(Scanner scanner, ArrayList<Phone> phones) {
+        System.out.println("\n--- СТВОРЕННЯ SATELLITE PHONE ---");
+        try {
+            Phone base = inputCommonData(scanner);
+            System.out.print("Супутникова мережа: ");
+            String network = scanner.nextLine();
+            System.out.print("Довжина антени (см): ");
+            double antenna = Double.parseDouble(scanner.nextLine());
+
+            SatellitePhone sp = new SatellitePhone(base.getBrand(), base.getModel(), base.getPrice(), base.getYear(),
+                    base.getStorage(), base.getBatteryCapacity(), base.getOperatingSystem(), base.getWeight(),
+                    base.getColor(), network, antenna);
+            phones.add(sp);
+            System.out.println("Успіх: SatellitePhone додано!");
+        } catch (Exception e) {
+            System.out.println("Помилка: " + e.getMessage());
+        }
+    }
+
+    private static void createFoldablePhone(Scanner scanner, ArrayList<Phone> phones) {
+        System.out.println("\n--- СТВОРЕННЯ FOLDABLE PHONE ---");
+        try {
+            Phone base = inputCommonData(scanner);
+            System.out.print("Кількість мегапікселів камери: ");
+            double camera = Double.parseDouble(scanner.nextLine());
+            System.out.print("Чи є NFC (true/false): ");
+            boolean hasNFC = Boolean.parseBoolean(scanner.nextLine());
+            System.out.print("Розмір додаткового екрану (дюйми): ");
+            double secondScreen = Double.parseDouble(scanner.nextLine());
+            System.out.print("Тип механізму (напр. Гнучкий шарнір): ");
+            String mechanism = scanner.nextLine();
+
+            FoldablePhone fp = new FoldablePhone(base.getBrand(), base.getModel(), base.getPrice(), base.getYear(),
+                    base.getStorage(), base.getBatteryCapacity(), base.getOperatingSystem(), base.getWeight(),
+                    base.getColor(), camera, hasNFC, secondScreen, mechanism);
+            phones.add(fp);
+            System.out.println("Успіх: FoldablePhone додано!");
         } catch (Exception e) {
             System.out.println("Помилка: " + e.getMessage());
         }
