@@ -15,6 +15,14 @@ public class Phone {
     private OperatingSystem operatingSystem;
     private double weight;
     private Color color;
+    private String classType;
+
+    /**
+     * Порожній конструктор для Gson.
+     */
+    public Phone() {
+        this.classType = "Phone";
+    }
 
     /**
      * Конструктор для ініціалізації об'єкта Phone.
@@ -33,7 +41,6 @@ public class Phone {
     public Phone(String brand, String model, double price, int year, int storage,
             int batteryCapacity, OperatingSystem operatingSystem, double weight, Color color) {
 
-
         setBrand(brand);
         setModel(model);
         setPrice(price);
@@ -43,8 +50,16 @@ public class Phone {
         setOperatingSystem(operatingSystem);
         setWeight(weight);
         setColor(color);
+        this.classType = "Phone";
     }
 
+    public String getClassType() {
+        return classType;
+    }
+
+    public void setClassType(String classType) {
+        this.classType = classType;
+    }
 
     /**
      * Конструктор копіювання для створення нового об'єкта на основі існуючого.
@@ -66,8 +81,6 @@ public class Phone {
         this.weight = other.weight;
         this.color = other.color;
     }
-
-
 
     public String getBrand() {
         return brand;
@@ -180,8 +193,6 @@ public class Phone {
         }
         this.color = color;
     }
-
-
 
     @Override
     public boolean equals(Object o) {

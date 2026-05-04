@@ -7,14 +7,19 @@ public class FoldablePhone extends SmartPhone {
     private double secondaryScreenSize;
     private String foldMechanismType;
 
+    public FoldablePhone() {
+        setClassType("FoldablePhone");
+    }
+
     public FoldablePhone(String brand, String model, double price, int year, int storage,
-            int batteryCapacity, OperatingSystem operatingSystem, double weight, Color color,
-            double cameraMegapixels, boolean hasNFC,
-            double secondaryScreenSize, String foldMechanismType) {
+                         int batteryCapacity, OperatingSystem operatingSystem, double weight, Color color,
+                         double cameraMegapixels, boolean hasNFC,
+                         double secondaryScreenSize, String foldMechanismType) {
         super(brand, model, price, year, storage, batteryCapacity, operatingSystem, weight, color, cameraMegapixels,
                 hasNFC);
         setSecondaryScreenSize(secondaryScreenSize);
         setFoldMechanismType(foldMechanismType);
+        setClassType("FoldablePhone");
     }
 
     public double getSecondaryScreenSize() {

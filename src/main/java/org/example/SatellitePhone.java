@@ -7,12 +7,17 @@ public class SatellitePhone extends Phone {
     private String satelliteNetwork;
     private double antennaLength;
 
+    public SatellitePhone() {
+        setClassType("SatellitePhone");
+    }
+
     public SatellitePhone(String brand, String model, double price, int year, int storage,
                           int batteryCapacity, OperatingSystem operatingSystem, double weight, Color color,
                           String satelliteNetwork, double antennaLength) {
         super(brand, model, price, year, storage, batteryCapacity, operatingSystem, weight, color);
         setSatelliteNetwork(satelliteNetwork);
         setAntennaLength(antennaLength);
+        setClassType("SatellitePhone");
     }
 
     public String getSatelliteNetwork() {

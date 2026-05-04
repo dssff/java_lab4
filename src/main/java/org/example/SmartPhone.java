@@ -7,12 +7,17 @@ public class SmartPhone extends Phone {
     private double cameraMegapixels;
     private boolean hasNFC;
 
+    public SmartPhone() {
+        setClassType("SmartPhone");
+    }
+
     public SmartPhone(String brand, String model, double price, int year, int storage,
             int batteryCapacity, OperatingSystem operatingSystem, double weight, Color color,
             double cameraMegapixels, boolean hasNFC) {
         super(brand, model, price, year, storage, batteryCapacity, operatingSystem, weight, color);
         setCameraMegapixels(cameraMegapixels);
         this.hasNFC = hasNFC;
+        setClassType("SmartPhone");
     }
 
     public double getCameraMegapixels() {
