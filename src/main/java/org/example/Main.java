@@ -5,7 +5,12 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        ArrayList<Phone> phones = new ArrayList<>();
+        // Завантаження даних при старті
+        ArrayList<Phone> phones = FileHandler.loadFromText("input.txt");
+        if (!phones.isEmpty()) {
+            System.out.println("Дані успішно завантажено з файлу input.txt (" + phones.size() + " об'єктів).");
+        }
+
         Scanner scanner = new Scanner(System.in);
         boolean running = true;
 
@@ -29,6 +34,8 @@ public class Main {
                         displayPhones(phones);
                         break;
                     case "3":
+                        System.out.println("Збереження даних...");
+                        FileHandler.saveToText(phones, "input.txt");
                         System.out.println("Завершення роботи. На все добре!");
                         running = false;
                         break;
