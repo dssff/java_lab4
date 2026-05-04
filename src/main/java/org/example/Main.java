@@ -6,57 +6,73 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         ArrayList<Phone> phones = new ArrayList<>();
-
-        // Початкові дані для демонстрації
-        phones.add(new KeypadPhone("Nokia", "3310", 50.0, 2000, 2, 800, OperatingSystem.OTHER, 133.0, Color.BLUE, false,
-                false));
-        phones.add(new Phone("Samsung", "Galaxy S23", 900.00, 2024, 128, 3900, OperatingSystem.ANDROID, 210.0,
-                Color.SILVER));
-        phones.add(new SmartPhone("Apple", "iPhone 17", 799.99, 2025, 256, 3200, OperatingSystem.IOS, 185.0,
-                Color.BLACK, 48.0, true));
-
         Scanner scanner = new Scanner(System.in);
         boolean running = true;
 
         System.out.println("Вітаємо в системі управління телефонами!");
-
         // Основний цикл роботи консольного меню
         while (running) {
-            System.out.println("\n--- МЕНЮ ---");
-            System.out.println("1. Створити базовий телефон");
-            System.out.println("2. Створити SmartPhone");
-            System.out.println("3. Створити KeypadPhone");
-            System.out.println("4. Вивести всі телефони (Поліморфізм)");
-            System.out.println("5. Вийти");
+            System.out.println("\n--- ГОЛОВНЕ МЕНЮ ---");
+            System.out.println("1. Створити новий об’єкт");
+            System.out.println("2. Вивести інформацію про всі об’єкти");
+            System.out.println("3. Завершити роботу програми");
             System.out.print("Оберіть опцію: ");
 
             String choice = scanner.nextLine();
 
             switch (choice) {
                 case "1":
-                    createBasicPhone(scanner, phones);
+                    handleCreationSubmenu(scanner, phones);
                     break;
                 case "2":
-                    createSmartPhone(scanner, phones);
-                    break;
-                case "3":
-                    createKeypadPhone(scanner, phones);
-                    break;
-                case "4":
                     displayPhones(phones);
                     break;
-                case "5":
-                    System.out.println("Завершення роботи. На все добре!");
+                case "3":
+                    System.out.println("Завершення роботи.");
                     running = false;
                     break;
                 default:
-                    System.out.println("Помилка: Невідома опція. Спробуйте від 1 до 5.");
+                    System.out.println("Помилка: Невідома опція.");
             }
         }
         scanner.close();
     }
 
-    // Створює новий телефон, зчитуючи дані з консолі
+    // Підменю для вибору типу об'єкта
+    private static void handleCreationSubmenu(Scanner scanner, ArrayList<Phone> phones) {
+        boolean backToMain = false;
+        while (!backToMain) {
+            System.out.println("\n--- ОБЕРІТЬ ТИП ОБ'ЄКТА ---");
+            System.out.println("1. Базовий Phone");
+            System.out.println("2. SmartPhone");
+            System.out.println("3. KeypadPhone");
+            System.out.println("4. SatellitePhone ");
+            System.out.println("5. FoldablePhone");
+            System.out.println("0. Повернутися до головного меню");
+            System.out.print("Вибір: ");
+
+            String choice = scanner.nextLine();
+            switch (choice) {
+                case "1":
+                    createBasicPhone(scanner, phones);
+                    backToMain = true;
+                    break;
+                case "2":
+                    createSmartPhone(scanner, phones);
+                    backToMain = true;
+                    break;
+                case "3":
+                    createKeypadPhone(scanner, phones);
+                    backToMain = true;
+                    break;
+                case "0":
+                    backToMain = true;
+                    break;
+                default:
+                    System.out.println("Помилка: Невірний тип.");
+            }
+        }
+    }
 
     private static void createBasicPhone(Scanner scanner, ArrayList<Phone> phones) {
         System.out.println("\n--- СТВОРЕННЯ БАЗОВОГО ТЕЛЕФОНУ ---");
@@ -80,8 +96,7 @@ public class Main {
 
             SmartPhone sp = new SmartPhone(base.getBrand(), base.getModel(), base.getPrice(), base.getYear(),
                     base.getStorage(), base.getBatteryCapacity(), base.getOperatingSystem(), base.getWeight(),
-                    base.getColor(),
-                    camera, hasNFC);
+                    base.getColor(), camera, hasNFC);
             phones.add(sp);
             System.out.println("Успіх: SmartPhone додано!");
         } catch (Exception e) {
@@ -100,8 +115,7 @@ public class Main {
 
             KeypadPhone kp = new KeypadPhone(base.getBrand(), base.getModel(), base.getPrice(), base.getYear(),
                     base.getStorage(), base.getBatteryCapacity(), base.getOperatingSystem(), base.getWeight(),
-                    base.getColor(),
-                    dualSim, flashlight);
+                    base.getColor(), dualSim, flashlight);
             phones.add(kp);
             System.out.println("Успіх: KeypadPhone додано!");
         } catch (Exception e) {
@@ -131,8 +145,6 @@ public class Main {
 
         return new Phone(brand, model, price, year, storage, batteryCapacity, os, weight, color);
     }
-
-    // Вивід списка усіх збережених телефонів
 
     private static void displayPhones(ArrayList<Phone> phones) {
         System.out.println("\n--- СПИСОК ТЕЛЕФОНІВ ---");
