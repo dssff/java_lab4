@@ -1,21 +1,22 @@
 package org.example;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+/**
+ * Головний клас програми для управління колекцією телефонів.
+ */
 public class Main {
+
     public static void main(String[] args) {
         // Завантаження даних при старті
-        ArrayList<Phone> phones = FileHandler.loadFromText("input.txt");
-        if (!phones.isEmpty()) {
-            System.out.println("Дані успішно завантажено з файлу input.txt (" + phones.size() + " об'єктів).");
-        }
-
+        ArrayList<Phone> phones = loadDataOnStartup();
         Scanner scanner = new Scanner(System.in);
         boolean running = true;
 
         System.out.println("Вітаємо в системі управління телефонами!");
-        // Основний цикл роботи консольного меню
+
         while (running) {
             try {
                 System.out.println("\n--- ГОЛОВНЕ МЕНЮ ---");
@@ -34,9 +35,7 @@ public class Main {
                         displayPhones(phones);
                         break;
                     case "3":
-                        System.out.println("Збереження даних...");
-                        FileHandler.saveToText(phones, "input.txt");
-                        System.out.println("Завершення роботи. На все добре!");
+                        saveDataOnExit(phones);
                         running = false;
                         break;
                     default:
@@ -44,13 +43,56 @@ public class Main {
                 }
             } catch (Exception e) {
                 System.out.println("Критична помилка: " + e.getMessage());
-                System.out.println("Повернення до головного меню...");
             }
         }
         scanner.close();
     }
 
-    // Підменю для вибору типу об'єкта
+    /**
+     * Завантажує дані з JSON або TXT файлів при запуску.
+     */
+    private static ArrayList<Phone> loadDataOnStartup() {
+        ArrayList<Phone> phones = new ArrayList<>();
+        File jsonFile = new File("input.json");
+        File txtFile = new File("input.txt");
+
+        // Беремо дані з JSON (якщо він існує і не порожній)
+        if (jsonFile.exists() && jsonFile.length() > 0) {
+            phones = FileHandler.loadFromJson("input.json");
+            if (!phones.isEmpty()) {
+                System.out.println("Дані успішно завантажено з JSON (" + phones.size() + " об'єктів).");
+                return phones;
+            }
+        }
+
+        // 2. Якщо JSON не спрацював, спроба зчитати TXT
+        if (txtFile.exists()) {
+            phones = FileHandler.loadFromText("input.txt");
+            if (!phones.isEmpty()) {
+                System.out.println("Дані завантажено з TXT (" + phones.size() + " об'єктів).");
+                return phones;
+            }
+        }
+
+        System.out.println("Файли даних не знайдено або вони порожні. Починаємо з порожньою колекцією.");
+        return new ArrayList<>();
+    }
+
+    /**
+     * Зберігає колекцію у файли перед завершенням роботи.
+     */
+    private static void saveDataOnExit(ArrayList<Phone> phones) {
+        System.out.println("\n" + "=".repeat(40));
+        System.out.println("Збереження даних у файли...");
+        FileHandler.saveToText(phones, "input.txt");
+        FileHandler.saveToJson(phones, "input.json");
+        System.out.println("Збереження завершено. На все добре!");
+        System.out.println("=".repeat(40));
+    }
+
+    /**
+     * Відображає підменю вибору типу об'єкта для створення.
+     */
     private static void handleCreationSubmenu(Scanner scanner, ArrayList<Phone> phones) {
         boolean backToMain = false;
         while (!backToMain) {
@@ -89,129 +131,111 @@ public class Main {
                     backToMain = true;
                     break;
                 default:
-                    System.out.println("Помилка: Невірний вибір. Спробуйте ще раз або введіть 0.");
+                    System.out.println("Помилка: Невірний вибір. Спробуйте ще раз.");
             }
         }
     }
 
     /**
-     * Створює базовий об'єкт Phone на основі вводу користувача.
+     * Створення базового об'єкта Phone.
      */
     private static void createBasicPhone(Scanner scanner, ArrayList<Phone> phones) {
         System.out.println("\n--- СТВОРЕННЯ БАЗОВОГО ТЕЛЕФОНУ ---");
         try {
-            Phone phone = inputCommonData(scanner);
-            phones.add(phone);
-            System.out.println("Успіх: Базовий телефон додано!");
-        } catch (NumberFormatException e) {
-            System.out.println("Помилка: Введено некоректний формат числа.");
+            phones.add(inputCommonData(scanner));
+            System.out.println("Успіх: Телефон додано!");
         } catch (Exception e) {
-            System.out.println("Помилка: " + e.getMessage());
+            System.out.println("Помилка при створенні: " + e.getMessage());
         }
     }
 
     /**
-     * Створює об'єкт SmartPhone.
+     * Створення об'єкта SmartPhone.
      */
     private static void createSmartPhone(Scanner scanner, ArrayList<Phone> phones) {
         System.out.println("\n--- СТВОРЕННЯ SMARTPHONE ---");
         try {
-            Phone base = inputCommonData(scanner);
+            Phone b = inputCommonData(scanner);
             System.out.print("Кількість мегапікселів камери: ");
             double camera = Double.parseDouble(scanner.nextLine());
             System.out.print("Чи є NFC (true/false): ");
-            boolean hasNFC = Boolean.parseBoolean(scanner.nextLine());
+            boolean nfc = Boolean.parseBoolean(scanner.nextLine());
 
-            SmartPhone sp = new SmartPhone(base.getBrand(), base.getModel(), base.getPrice(), base.getYear(),
-                    base.getStorage(), base.getBatteryCapacity(), base.getOperatingSystem(), base.getWeight(),
-                    base.getColor(), camera, hasNFC);
-            phones.add(sp);
+            phones.add(new SmartPhone(b.getBrand(), b.getModel(), b.getPrice(), b.getYear(), b.getStorage(),
+                    b.getBatteryCapacity(), b.getOperatingSystem(), b.getWeight(), b.getColor(), camera, nfc));
             System.out.println("Успіх: SmartPhone додано!");
-        } catch (NumberFormatException e) {
-            System.out.println("Помилка: Некоректний формат числа.");
         } catch (Exception e) {
             System.out.println("Помилка: " + e.getMessage());
         }
     }
 
     /**
-     * Створює об'єкт KeypadPhone.
+     * Створення об'єкта KeypadPhone.
      */
     private static void createKeypadPhone(Scanner scanner, ArrayList<Phone> phones) {
         System.out.println("\n--- СТВОРЕННЯ KEYPADPHONE ---");
         try {
-            Phone base = inputCommonData(scanner);
+            Phone b = inputCommonData(scanner);
             System.out.print("Чи є Dual SIM (true/false): ");
             boolean dualSim = Boolean.parseBoolean(scanner.nextLine());
             System.out.print("Чи є ліхтарик (true/false): ");
             boolean flashlight = Boolean.parseBoolean(scanner.nextLine());
 
-            KeypadPhone kp = new KeypadPhone(base.getBrand(), base.getModel(), base.getPrice(), base.getYear(),
-                    base.getStorage(), base.getBatteryCapacity(), base.getOperatingSystem(), base.getWeight(),
-                    base.getColor(), dualSim, flashlight);
-            phones.add(kp);
+            phones.add(new KeypadPhone(b.getBrand(), b.getModel(), b.getPrice(), b.getYear(), b.getStorage(),
+                    b.getBatteryCapacity(), b.getOperatingSystem(), b.getWeight(), b.getColor(), dualSim, flashlight));
             System.out.println("Успіх: KeypadPhone додано!");
-        } catch (NumberFormatException e) {
-            System.out.println("Помилка: Некоректний формат числа.");
         } catch (Exception e) {
             System.out.println("Помилка: " + e.getMessage());
         }
     }
 
     /**
-     * Створює об'єкт SatellitePhone.
+     * Створення об'єкта SatellitePhone.
      */
     private static void createSatellitePhone(Scanner scanner, ArrayList<Phone> phones) {
         System.out.println("\n--- СТВОРЕННЯ SATELLITE PHONE ---");
         try {
-            Phone base = inputCommonData(scanner);
+            Phone b = inputCommonData(scanner);
             System.out.print("Супутникова мережа: ");
             String network = scanner.nextLine();
             System.out.print("Довжина антени (см): ");
             double antenna = Double.parseDouble(scanner.nextLine());
 
-            SatellitePhone sp = new SatellitePhone(base.getBrand(), base.getModel(), base.getPrice(), base.getYear(),
-                    base.getStorage(), base.getBatteryCapacity(), base.getOperatingSystem(), base.getWeight(),
-                    base.getColor(), network, antenna);
-            phones.add(sp);
+            phones.add(new SatellitePhone(b.getBrand(), b.getModel(), b.getPrice(), b.getYear(), b.getStorage(),
+                    b.getBatteryCapacity(), b.getOperatingSystem(), b.getWeight(), b.getColor(), network, antenna));
             System.out.println("Успіх: SatellitePhone додано!");
-        } catch (NumberFormatException e) {
-            System.out.println("Помилка: Некоректний формат числа.");
         } catch (Exception e) {
             System.out.println("Помилка: " + e.getMessage());
         }
     }
 
     /**
-     * Створює об'єкт FoldablePhone.
+     * Створення об'єкта FoldablePhone.
      */
     private static void createFoldablePhone(Scanner scanner, ArrayList<Phone> phones) {
         System.out.println("\n--- СТВОРЕННЯ FOLDABLE PHONE ---");
         try {
-            Phone base = inputCommonData(scanner);
-            System.out.print("Кількість мегапікселів камери: ");
+            Phone b = inputCommonData(scanner);
+            System.out.print("Мегапікселі камери: ");
             double camera = Double.parseDouble(scanner.nextLine());
-            System.out.print("Чи є NFC (true/false): ");
-            boolean hasNFC = Boolean.parseBoolean(scanner.nextLine());
-            System.out.print("Розмір додаткового екрану (дюйми): ");
+            System.out.print("Наявність NFC (true/false): ");
+            boolean nfc = Boolean.parseBoolean(scanner.nextLine());
+            System.out.print("Розмір додаткового екрану: ");
             double secondScreen = Double.parseDouble(scanner.nextLine());
             System.out.print("Тип механізму: ");
             String mechanism = scanner.nextLine();
 
-            FoldablePhone fp = new FoldablePhone(base.getBrand(), base.getModel(), base.getPrice(), base.getYear(),
-                    base.getStorage(), base.getBatteryCapacity(), base.getOperatingSystem(), base.getWeight(),
-                    base.getColor(), camera, hasNFC, secondScreen, mechanism);
-            phones.add(fp);
+            phones.add(new FoldablePhone(b.getBrand(), b.getModel(), b.getPrice(), b.getYear(), b.getStorage(),
+                    b.getBatteryCapacity(), b.getOperatingSystem(), b.getWeight(), b.getColor(), camera, nfc,
+                    secondScreen, mechanism));
             System.out.println("Успіх: FoldablePhone додано!");
-        } catch (NumberFormatException e) {
-            System.out.println("Помилка: Некоректний формат числа.");
         } catch (Exception e) {
             System.out.println("Помилка: " + e.getMessage());
         }
     }
 
     /**
-     * Зчитує спільні дані для всіх типів телефонів.
+     * Допоміжний метод для вводу спільних атрибутів усіх телефонів.
      */
     private static Phone inputCommonData(Scanner scanner) {
         System.out.print("Бренд: ");
@@ -220,27 +244,28 @@ public class Main {
         String model = scanner.nextLine();
         System.out.print("Ціна: ");
         double price = Double.parseDouble(scanner.nextLine());
-        System.out.print("Рік випуску: ");
+        System.out.print("Рік випуску (1990-2030): ");
         int year = Integer.parseInt(scanner.nextLine());
-        System.out.print("Обсяг пам'яті (ГБ): ");
+        System.out.print("Пам'ять (ГБ): ");
         int storage = Integer.parseInt(scanner.nextLine());
-        System.out.print("Ємність батареї (мАг): ");
-        int batteryCapacity = Integer.parseInt(scanner.nextLine());
-        System.out.print("Оберіть ОС (ANDROID, IOS, WINDOWS_PHONE, OTHER): ");
+        System.out.print("Батарея (мАг): ");
+        int battery = Integer.parseInt(scanner.nextLine());
+        System.out.print("ОС (ANDROID, IOS, WINDOWS_PHONE, OTHER): ");
         OperatingSystem os = OperatingSystem.valueOf(scanner.nextLine().trim().toUpperCase());
         System.out.print("Вага (г): ");
         double weight = Double.parseDouble(scanner.nextLine());
-        System.out.print("Оберіть колір (BLACK, WHITE, SILVER, GOLD, BLUE, RED, GREEN): ");
+        System.out.print("Колір (BLACK, WHITE, SILVER, GOLD, BLUE, RED, GREEN): ");
         Color color = Color.valueOf(scanner.nextLine().trim().toUpperCase());
 
-        return new Phone(brand, model, price, year, storage, batteryCapacity, os, weight, color);
+        return new Phone(brand, model, price, year, storage, battery, os, weight, color);
     }
 
     /**
      * Вивів інформації про всі об'єкти
      */
     private static void displayPhones(ArrayList<Phone> phones) {
-        System.out.println("\n--- СПИСОК ТЕЛЕФОНІВ ---");
+        System.out.println("\n" + "=".repeat(40));
+        System.out.println("--- СПИСОК ТЕЛЕФОНІВ У КОЛЕКЦІЇ ---");
         if (phones.isEmpty()) {
             System.out.println("Список порожній.");
         } else {

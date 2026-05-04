@@ -1,0 +1,26 @@
+[
+  {
+    "brand": "Iphone",
+    "model": "17 ",
+    "price": 999.99,
+    "year": 2000,
+    "storage": 126,
+    "batteryCapacity": 3000,
+    "operatingSystem": "IOS",
+    "weight": 999.0,
+    "color": "BLACK",
+    "classType": "Phone"
+  },
+  {
+    "brand": "Iphone",
+    "model": "16",
+    "price": 777.77,
+    "year": 2020,
+    "storage": 774,
+    "batteryCapacity": 3000,
+    "operatingSystem": "IOS",
+    "weight": 300.0,
+    "color": "WHITE",
+    "classType": "Phone"
+  }
+]
