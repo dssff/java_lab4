@@ -63,10 +63,36 @@ class PhoneTest {
         java.util.ArrayList<Phone> list = new java.util.ArrayList<>();
         list.add(new Phone("Nokia", "1100", 20.0, 2003, 1, 850, OperatingSystem.OTHER, 93.0, Color.SILVER));
         list.add(new SmartPhone("Apple", "iPhone 15", 999.99, 2023, 128, 3349, OperatingSystem.IOS, 171.0, Color.BLACK, 48.0, true));
+        list.add(new KeypadPhone("Samsung", "B310E", 30.0, 2014, 1, 800, OperatingSystem.OTHER, 75.0, Color.WHITE, true, true));
+        list.add(new SatellitePhone("Iridium", "9555", 1200.0, 2021, 1, 2200, OperatingSystem.OTHER, 266.0, Color.BLACK, "Iridium", 12.0));
+        list.add(new FoldablePhone("Samsung", "Fold 5", 1800.0, 2023, 512, 4400, OperatingSystem.ANDROID, 253.0, Color.BLACK, 50.0, true, 6.2, "Flex"));
         
+        assertEquals(5, list.size());
         assertTrue(list.get(0) instanceof Phone);
         assertTrue(list.get(1) instanceof SmartPhone);
-        assertEquals("Nokia", list.get(0).getBrand());
-        assertEquals("Apple", list.get(1).getBrand());
+        assertTrue(list.get(2) instanceof KeypadPhone);
+        assertTrue(list.get(3) instanceof SatellitePhone);
+        assertTrue(list.get(4) instanceof FoldablePhone);
+    }
+
+    @Test
+    void shouldCreateSatellitePhoneWithSpecificData() {
+        SatellitePhone sp = new SatellitePhone("Iridium", "Extreme", 1500.0, 2022, 1, 2500, OperatingSystem.OTHER, 247.0, Color.BLACK, "Iridium Network", 15.5);
+        assertEquals("Iridium Network", sp.getSatelliteNetwork());
+        assertEquals(15.5, sp.getAntennaLength());
+    }
+
+    @Test
+    void shouldCreateFoldablePhoneWithSpecificData() {
+        FoldablePhone fp = new FoldablePhone("Samsung", "Galaxy Z Fold 5", 1800.0, 2023, 512, 4400, OperatingSystem.ANDROID, 253.0, Color.BLUE, 50.0, true, 6.2, "Flex Hinge");
+        assertEquals(6.2, fp.getSecondaryScreenSize());
+        assertEquals("Flex Hinge", fp.getFoldMechanismType());
+    }
+
+    @Test
+    void shouldThrowExceptionWhenNegativeAntennaLength() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            new SatellitePhone("Iridium", "9555", 1200.0, 2021, 1, 2200, OperatingSystem.OTHER, 266.0, Color.BLACK, "Iridium", -5.0);
+        });
     }
 }

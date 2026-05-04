@@ -12,27 +12,32 @@ public class Main {
         System.out.println("Вітаємо в системі управління телефонами!");
         // Основний цикл роботи консольного меню
         while (running) {
-            System.out.println("\n--- ГОЛОВНЕ МЕНЮ ---");
-            System.out.println("1. Створити новий об’єкт");
-            System.out.println("2. Вивести інформацію про всі об’єкти");
-            System.out.println("3. Завершити роботу програми");
-            System.out.print("Оберіть опцію: ");
+            try {
+                System.out.println("\n--- ГОЛОВНЕ МЕНЮ ---");
+                System.out.println("1. Створити новий об’єкт");
+                System.out.println("2. Вивести інформацію про всі об’єкти");
+                System.out.println("3. Завершити роботу програми");
+                System.out.print("Оберіть опцію: ");
 
-            String choice = scanner.nextLine();
+                String choice = scanner.nextLine();
 
-            switch (choice) {
-                case "1":
-                    handleCreationSubmenu(scanner, phones);
-                    break;
-                case "2":
-                    displayPhones(phones);
-                    break;
-                case "3":
-                    System.out.println("Завершення роботи.");
-                    running = false;
-                    break;
-                default:
-                    System.out.println("Помилка: Невідома опція.");
+                switch (choice) {
+                    case "1":
+                        handleCreationSubmenu(scanner, phones);
+                        break;
+                    case "2":
+                        displayPhones(phones);
+                        break;
+                    case "3":
+                        System.out.println("Завершення роботи. На все добре!");
+                        running = false;
+                        break;
+                    default:
+                        System.out.println("Помилка: Невідома опція. Спробуйте 1, 2 або 3.");
+                }
+            } catch (Exception e) {
+                System.out.println("Критична помилка: " + e.getMessage());
+                System.out.println("Повернення до головного меню...");
             }
         }
         scanner.close();
@@ -46,9 +51,9 @@ public class Main {
             System.out.println("1. Базовий Phone");
             System.out.println("2. SmartPhone");
             System.out.println("3. KeypadPhone");
-            System.out.println("4. SatellitePhone ");
+            System.out.println("4. SatellitePhone");
             System.out.println("5. FoldablePhone");
-            System.out.println("0. Повернутися до головного меню");
+            System.out.println("0. Повернутися до головного меню (Скасувати)");
             System.out.print("Вибір: ");
 
             String choice = scanner.nextLine();
@@ -77,22 +82,30 @@ public class Main {
                     backToMain = true;
                     break;
                 default:
-                    System.out.println("Помилка: Невірний тип.");
+                    System.out.println("Помилка: Невірний вибір. Спробуйте ще раз або введіть 0.");
             }
         }
     }
 
+    /**
+     * Створює базовий об'єкт Phone на основі вводу користувача.
+     */
     private static void createBasicPhone(Scanner scanner, ArrayList<Phone> phones) {
         System.out.println("\n--- СТВОРЕННЯ БАЗОВОГО ТЕЛЕФОНУ ---");
         try {
             Phone phone = inputCommonData(scanner);
             phones.add(phone);
             System.out.println("Успіх: Базовий телефон додано!");
+        } catch (NumberFormatException e) {
+            System.out.println("Помилка: Введено некоректний формат числа.");
         } catch (Exception e) {
             System.out.println("Помилка: " + e.getMessage());
         }
     }
 
+    /**
+     * Створює об'єкт SmartPhone.
+     */
     private static void createSmartPhone(Scanner scanner, ArrayList<Phone> phones) {
         System.out.println("\n--- СТВОРЕННЯ SMARTPHONE ---");
         try {
@@ -107,11 +120,16 @@ public class Main {
                     base.getColor(), camera, hasNFC);
             phones.add(sp);
             System.out.println("Успіх: SmartPhone додано!");
+        } catch (NumberFormatException e) {
+            System.out.println("Помилка: Некоректний формат числа.");
         } catch (Exception e) {
             System.out.println("Помилка: " + e.getMessage());
         }
     }
 
+    /**
+     * Створює об'єкт KeypadPhone.
+     */
     private static void createKeypadPhone(Scanner scanner, ArrayList<Phone> phones) {
         System.out.println("\n--- СТВОРЕННЯ KEYPADPHONE ---");
         try {
@@ -126,11 +144,16 @@ public class Main {
                     base.getColor(), dualSim, flashlight);
             phones.add(kp);
             System.out.println("Успіх: KeypadPhone додано!");
+        } catch (NumberFormatException e) {
+            System.out.println("Помилка: Некоректний формат числа.");
         } catch (Exception e) {
             System.out.println("Помилка: " + e.getMessage());
         }
     }
 
+    /**
+     * Створює об'єкт SatellitePhone.
+     */
     private static void createSatellitePhone(Scanner scanner, ArrayList<Phone> phones) {
         System.out.println("\n--- СТВОРЕННЯ SATELLITE PHONE ---");
         try {
@@ -145,11 +168,16 @@ public class Main {
                     base.getColor(), network, antenna);
             phones.add(sp);
             System.out.println("Успіх: SatellitePhone додано!");
+        } catch (NumberFormatException e) {
+            System.out.println("Помилка: Некоректний формат числа.");
         } catch (Exception e) {
             System.out.println("Помилка: " + e.getMessage());
         }
     }
 
+    /**
+     * Створює об'єкт FoldablePhone.
+     */
     private static void createFoldablePhone(Scanner scanner, ArrayList<Phone> phones) {
         System.out.println("\n--- СТВОРЕННЯ FOLDABLE PHONE ---");
         try {
@@ -160,7 +188,7 @@ public class Main {
             boolean hasNFC = Boolean.parseBoolean(scanner.nextLine());
             System.out.print("Розмір додаткового екрану (дюйми): ");
             double secondScreen = Double.parseDouble(scanner.nextLine());
-            System.out.print("Тип механізму (напр. Гнучкий шарнір): ");
+            System.out.print("Тип механізму: ");
             String mechanism = scanner.nextLine();
 
             FoldablePhone fp = new FoldablePhone(base.getBrand(), base.getModel(), base.getPrice(), base.getYear(),
@@ -168,11 +196,16 @@ public class Main {
                     base.getColor(), camera, hasNFC, secondScreen, mechanism);
             phones.add(fp);
             System.out.println("Успіх: FoldablePhone додано!");
+        } catch (NumberFormatException e) {
+            System.out.println("Помилка: Некоректний формат числа.");
         } catch (Exception e) {
             System.out.println("Помилка: " + e.getMessage());
         }
     }
 
+    /**
+     * Зчитує спільні дані для всіх типів телефонів.
+     */
     private static Phone inputCommonData(Scanner scanner) {
         System.out.print("Бренд: ");
         String brand = scanner.nextLine();
@@ -187,15 +220,18 @@ public class Main {
         System.out.print("Ємність батареї (мАг): ");
         int batteryCapacity = Integer.parseInt(scanner.nextLine());
         System.out.print("Оберіть ОС (ANDROID, IOS, WINDOWS_PHONE, OTHER): ");
-        OperatingSystem os = OperatingSystem.valueOf(scanner.nextLine().toUpperCase());
+        OperatingSystem os = OperatingSystem.valueOf(scanner.nextLine().trim().toUpperCase());
         System.out.print("Вага (г): ");
         double weight = Double.parseDouble(scanner.nextLine());
         System.out.print("Оберіть колір (BLACK, WHITE, SILVER, GOLD, BLUE, RED, GREEN): ");
-        Color color = Color.valueOf(scanner.nextLine().toUpperCase());
+        Color color = Color.valueOf(scanner.nextLine().trim().toUpperCase());
 
         return new Phone(brand, model, price, year, storage, batteryCapacity, os, weight, color);
     }
 
+    /**
+     * Вивів інформації про всі об'єкти
+     */
     private static void displayPhones(ArrayList<Phone> phones) {
         System.out.println("\n--- СПИСОК ТЕЛЕФОНІВ ---");
         if (phones.isEmpty()) {
