@@ -20,26 +20,30 @@ public class Main {
         while (running) {
             try {
                 System.out.println("\n--- ГОЛОВНЕ МЕНЮ ---");
-                System.out.println("1. Створити новий об’єкт");
-                System.out.println("2. Вивести інформацію про всі об’єкти");
-                System.out.println("3. Завершити роботу програми");
+                System.out.println("1. Пошук об’єкта");
+                System.out.println("2. Створити новий об’єкт");
+                System.out.println("3. Вивести інформацію про всі об’єкти");
+                System.out.println("4. Завершити роботу програми");
                 System.out.print("Оберіть опцію: ");
 
                 String choice = scanner.nextLine();
 
                 switch (choice) {
                     case "1":
-                        handleCreationSubmenu(scanner, phones);
+                        handleSearchSubmenu(scanner, phones);
                         break;
                     case "2":
-                        displayPhones(phones);
+                        handleCreationSubmenu(scanner, phones);
                         break;
                     case "3":
+                        displayPhones(phones);
+                        break;
+                    case "4":
                         saveDataOnExit(phones);
                         running = false;
                         break;
                     default:
-                        System.out.println("Помилка: Невідома опція. Спробуйте 1, 2 або 3.");
+                        System.out.println("Помилка: Невідома опція. Спробуйте 1, 2, 3 або 4.");
                 }
             } catch (Exception e) {
                 System.out.println("Критична помилка: " + e.getMessage());
@@ -88,6 +92,111 @@ public class Main {
         FileHandler.saveToJson(phones, "input.json");
         System.out.println("Збереження завершено. На все добре!");
         System.out.println("=".repeat(40));
+    }
+
+    /**
+     * Відображає підменю пошуку об'єктів.
+     */
+    private static void handleSearchSubmenu(Scanner scanner, ArrayList<Phone> phones) {
+        boolean backToMain = false;
+        while (!backToMain) {
+            System.out.println("\n--- ПІДМЕНЮ ПОШУКУ ---");
+            System.out.println("1. Пошук за брендом");
+            System.out.println("2. Пошук за роком випуску");
+            System.out.println("3. Пошук за операційною системою");
+            System.out.println("0. Повернутися до головного меню");
+            System.out.print("Вибір: ");
+
+            String choice = scanner.nextLine();
+            switch (choice) {
+                case "1":
+                    searchByBrand(scanner, phones);
+                    break;
+                case "2":
+                    searchByYear(scanner, phones);
+                    break;
+                case "3":
+                    searchByOS(scanner, phones);
+                    break;
+                case "0":
+                    backToMain = true;
+                    break;
+                default:
+                    System.out.println("Помилка: Невірний вибір. Спробуйте ще раз.");
+            }
+        }
+    }
+
+    private static void searchByBrand(Scanner scanner, ArrayList<Phone> phones) {
+        System.out.print("Введіть бренд для пошуку: ");
+        String brand = scanner.nextLine();
+        ArrayList<Phone> results = findPhonesByBrand(phones, brand);
+        displaySearchResults(results);
+    }
+
+    private static ArrayList<Phone> findPhonesByBrand(ArrayList<Phone> phones, String brand) {
+        ArrayList<Phone> result = new ArrayList<>();
+        for (Phone phone : phones) {
+            if (phone.getBrand().equalsIgnoreCase(brand)) {
+                result.add(phone);
+            }
+        }
+        return result;
+    }
+
+    private static void searchByYear(Scanner scanner, ArrayList<Phone> phones) {
+        System.out.print("Введіть рік випуску для пошуку: ");
+        try {
+            int year = Integer.parseInt(scanner.nextLine());
+            ArrayList<Phone> results = findPhonesByYear(phones, year);
+            displaySearchResults(results);
+        } catch (NumberFormatException e) {
+            System.out.println("Помилка: Невірний формат року.");
+        }
+    }
+
+    private static ArrayList<Phone> findPhonesByYear(ArrayList<Phone> phones, int year) {
+        ArrayList<Phone> result = new ArrayList<>();
+        for (Phone phone : phones) {
+            if (phone.getYear() == year) {
+                result.add(phone);
+            }
+        }
+        return result;
+    }
+
+    private static void searchByOS(Scanner scanner, ArrayList<Phone> phones) {
+        System.out.print("Введіть операційну систему (ANDROID, IOS, WINDOWS_PHONE, OTHER): ");
+        String osStr = scanner.nextLine();
+        try {
+            OperatingSystem os = OperatingSystem.valueOf(osStr.trim().toUpperCase());
+            ArrayList<Phone> results = findPhonesByOS(phones, os);
+            displaySearchResults(results);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Помилка: Невідома операційна система.");
+        }
+    }
+
+    private static ArrayList<Phone> findPhonesByOS(ArrayList<Phone> phones, OperatingSystem os) {
+        ArrayList<Phone> result = new ArrayList<>();
+        for (Phone phone : phones) {
+            if (phone.getOperatingSystem() == os) {
+                result.add(phone);
+            }
+        }
+        return result;
+    }
+
+    private static void displaySearchResults(ArrayList<Phone> results) {
+        if (results.isEmpty()) {
+            System.out.println("Жоден об’єкт не відповідає умовам пошуку.");
+        } else {
+            System.out.println("\n--- РЕЗУЛЬТАТИ ПОШУКУ ---");
+            System.out.println("Знайдено об'єктів: " + results.size());
+            for (int i = 0; i < results.size(); i++) {
+                System.out.println((i + 1) + ". " + results.get(i).toString());
+            }
+        }
     }
 
     /**
