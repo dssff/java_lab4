@@ -11,11 +11,11 @@ public class Main {
 
     public static void main(String[] args) {
         // Завантаження даних при старті
-        ArrayList<Phone> phones = loadDataOnStartup();
+        Store store = loadDataOnStartup();
         Scanner scanner = new Scanner(System.in);
         boolean running = true;
 
-        System.out.println("Вітаємо в системі управління телефонами!");
+        System.out.println("Вітаємо в системі управління телефонами");
 
         while (running) {
             try {
@@ -30,16 +30,16 @@ public class Main {
 
                 switch (choice) {
                     case "1":
-                        handleSearchSubmenu(scanner, phones);
+                        handleSearchSubmenu(scanner, store);
                         break;
                     case "2":
-                        handleCreationSubmenu(scanner, phones);
+                        handleCreationSubmenu(scanner, store);
                         break;
                     case "3":
-                        displayPhones(phones);
+                        displayPhones(store);
                         break;
                     case "4":
-                        saveDataOnExit(phones);
+                        saveDataOnExit(store);
                         running = false;
                         break;
                     default:
@@ -53,43 +53,44 @@ public class Main {
     }
 
     /**
-     * Завантажує дані з JSON або TXT файлів при запуску.
+     * Завантажує дані з TXT файлу при запуску.
      */
-    private static ArrayList<Phone> loadDataOnStartup() {
-        ArrayList<Phone> phones = new ArrayList<>();
-        File jsonFile = new File("input.json");
+    private static Store loadDataOnStartup() {
+        Store store = new Store();
         File txtFile = new File("input.txt");
 
-        // Беремо дані з JSON (якщо він існує і не порожній)
-        if (jsonFile.exists() && jsonFile.length() > 0) {
-            phones = FileHandler.loadFromJson("input.json");
-            if (!phones.isEmpty()) {
-                System.out.println("Дані успішно завантажено з JSON (" + phones.size() + " об'єктів).");
-                return phones;
-            }
-        }
-
-        // 2. Якщо JSON не спрацював, спроба зчитати TXT
         if (txtFile.exists()) {
-            phones = FileHandler.loadFromText("input.txt");
+            ArrayList<Phone> phones = FileHandler.loadFromText("input.txt");
             if (!phones.isEmpty()) {
-                System.out.println("Дані завантажено з TXT (" + phones.size() + " об'єктів).");
-                return phones;
+                for (Phone p : phones) {
+                    store.addNewPhone(p, 1);
+                }
+                System.out.println("Дані успішно завантажено з TXT (зчитано рядків: " + phones.size() + ").");
+                return store;
             }
         }
 
-        System.out.println("Файли даних не знайдено або вони порожні. Починаємо з порожньою колекцією.");
-        return new ArrayList<>();
+        System.out.println("Файли даних не знайдено або вони порожні. Починаємо з порожнім магазином.");
+        return store;
     }
 
     /**
      * Зберігає колекцію у файли перед завершенням роботи.
      */
-    private static void saveDataOnExit(ArrayList<Phone> phones) {
+    private static void saveDataOnExit(Store store) {
         System.out.println("\n" + "=".repeat(40));
         System.out.println("Збереження даних у файли...");
-        FileHandler.saveToText(phones, "input.txt");
-        FileHandler.saveToJson(phones, "input.json");
+
+        ArrayList<Phone> allPhones = new ArrayList<>();
+        for (StoreItem item : store.getInventory()) {
+            // Розгортаємо кількість для збереження по одному об'єкту у рядок
+            for (int i = 0; i < item.getQuantity(); i++) {
+                allPhones.add(item.getPhone());
+            }
+        }
+
+        FileHandler.saveToText(allPhones, "input.txt");
+        FileHandler.saveToJson(allPhones, "input.json");
         System.out.println("Збереження завершено. На все добре!");
         System.out.println("=".repeat(40));
     }
@@ -97,7 +98,7 @@ public class Main {
     /**
      * Відображає підменю пошуку об'єктів.
      */
-    private static void handleSearchSubmenu(Scanner scanner, ArrayList<Phone> phones) {
+    private static void handleSearchSubmenu(Scanner scanner, Store store) {
         boolean backToMain = false;
         while (!backToMain) {
             System.out.println("\n--- ПІДМЕНЮ ПОШУКУ ---");
@@ -110,13 +111,13 @@ public class Main {
             String choice = scanner.nextLine();
             switch (choice) {
                 case "1":
-                    searchByBrand(scanner, phones);
+                    searchByBrand(scanner, store);
                     break;
                 case "2":
-                    searchByYear(scanner, phones);
+                    searchByYear(scanner, store);
                     break;
                 case "3":
-                    searchByOS(scanner, phones);
+                    searchByOS(scanner, store);
                     break;
                 case "0":
                     backToMain = true;
@@ -127,72 +128,42 @@ public class Main {
         }
     }
 
-    private static void searchByBrand(Scanner scanner, ArrayList<Phone> phones) {
+    private static void searchByBrand(Scanner scanner, Store store) {
         System.out.print("Введіть бренд для пошуку: ");
         String brand = scanner.nextLine();
-        ArrayList<Phone> results = findPhonesByBrand(phones, brand);
+        ArrayList<StoreItem> results = store.findPhonesByBrand(brand);
         displaySearchResults(results);
     }
 
-    private static ArrayList<Phone> findPhonesByBrand(ArrayList<Phone> phones, String brand) {
-        ArrayList<Phone> result = new ArrayList<>();
-        for (Phone phone : phones) {
-            if (phone.getBrand().equalsIgnoreCase(brand)) {
-                result.add(phone);
-            }
-        }
-        return result;
-    }
-
-    private static void searchByYear(Scanner scanner, ArrayList<Phone> phones) {
+    private static void searchByYear(Scanner scanner, Store store) {
         System.out.print("Введіть рік випуску для пошуку: ");
         try {
             int year = Integer.parseInt(scanner.nextLine());
-            ArrayList<Phone> results = findPhonesByYear(phones, year);
+            ArrayList<StoreItem> results = store.findPhonesByYear(year);
             displaySearchResults(results);
         } catch (NumberFormatException e) {
             System.out.println("Помилка: Невірний формат року.");
         }
     }
 
-    private static ArrayList<Phone> findPhonesByYear(ArrayList<Phone> phones, int year) {
-        ArrayList<Phone> result = new ArrayList<>();
-        for (Phone phone : phones) {
-            if (phone.getYear() == year) {
-                result.add(phone);
-            }
-        }
-        return result;
-    }
-
-    private static void searchByOS(Scanner scanner, ArrayList<Phone> phones) {
+    private static void searchByOS(Scanner scanner, Store store) {
         System.out.print("Введіть операційну систему (ANDROID, IOS, WINDOWS_PHONE, OTHER): ");
         String osStr = scanner.nextLine();
         try {
             OperatingSystem os = OperatingSystem.valueOf(osStr.trim().toUpperCase());
-            ArrayList<Phone> results = findPhonesByOS(phones, os);
+            ArrayList<StoreItem> results = store.findPhonesByOS(os);
             displaySearchResults(results);
         } catch (IllegalArgumentException e) {
             System.out.println("Помилка: Невідома операційна система.");
         }
     }
 
-    private static ArrayList<Phone> findPhonesByOS(ArrayList<Phone> phones, OperatingSystem os) {
-        ArrayList<Phone> result = new ArrayList<>();
-        for (Phone phone : phones) {
-            if (phone.getOperatingSystem() == os) {
-                result.add(phone);
-            }
-        }
-        return result;
-    }
-
-    private static void displaySearchResults(ArrayList<Phone> results) {
+    private static void displaySearchResults(ArrayList<StoreItem> results) {
         if (results.isEmpty()) {
             System.out.println("Жоден об’єкт не відповідає умовам пошуку.");
         } else {
             System.out.println("\n--- РЕЗУЛЬТАТИ ПОШУКУ ---");
-            System.out.println("Знайдено об'єктів: " + results.size());
+            System.out.println("Знайдено об'єктів (видів): " + results.size());
             for (int i = 0; i < results.size(); i++) {
                 System.out.println((i + 1) + ". " + results.get(i).toString());
             }
@@ -202,7 +173,7 @@ public class Main {
     /**
      * Відображає підменю вибору типу об'єкта для створення.
      */
-    private static void handleCreationSubmenu(Scanner scanner, ArrayList<Phone> phones) {
+    private static void handleCreationSubmenu(Scanner scanner, Store store) {
         boolean backToMain = false;
         while (!backToMain) {
             System.out.println("\n--- ОБЕРІТЬ ТИП ОБ'ЄКТА ---");
@@ -217,23 +188,23 @@ public class Main {
             String choice = scanner.nextLine();
             switch (choice) {
                 case "1":
-                    createBasicPhone(scanner, phones);
+                    createBasicPhone(scanner, store);
                     backToMain = true;
                     break;
                 case "2":
-                    createSmartPhone(scanner, phones);
+                    createSmartPhone(scanner, store);
                     backToMain = true;
                     break;
                 case "3":
-                    createKeypadPhone(scanner, phones);
+                    createKeypadPhone(scanner, store);
                     backToMain = true;
                     break;
                 case "4":
-                    createSatellitePhone(scanner, phones);
+                    createSatellitePhone(scanner, store);
                     backToMain = true;
                     break;
                 case "5":
-                    createFoldablePhone(scanner, phones);
+                    createFoldablePhone(scanner, store);
                     backToMain = true;
                     break;
                 case "0":
@@ -245,23 +216,30 @@ public class Main {
         }
     }
 
-    /**
-     * Створення базового об'єкта Phone.
-     */
-    private static void createBasicPhone(Scanner scanner, ArrayList<Phone> phones) {
+    private static int askForQuantity(Scanner scanner) {
+        System.out.print("Кількість штук для додавання в магазин: ");
+        try {
+            int q = Integer.parseInt(scanner.nextLine());
+            return Math.max(q, 1);
+        } catch (NumberFormatException e) {
+            System.out.println("Помилка формату. Буде додано 1 шт.");
+            return 1;
+        }
+    }
+
+    private static void createBasicPhone(Scanner scanner, Store store) {
         System.out.println("\n--- СТВОРЕННЯ БАЗОВОГО ТЕЛЕФОНУ ---");
         try {
-            phones.add(inputCommonData(scanner));
-            System.out.println("Успіх: Телефон додано!");
+            Phone p = inputCommonData(scanner);
+            int qty = askForQuantity(scanner);
+            store.addNewPhone(p, qty);
+            System.out.println("Успіх: Телефон додано до магазину!");
         } catch (Exception e) {
             System.out.println("Помилка при створенні: " + e.getMessage());
         }
     }
 
-    /**
-     * Створення об'єкта SmartPhone.
-     */
-    private static void createSmartPhone(Scanner scanner, ArrayList<Phone> phones) {
+    private static void createSmartPhone(Scanner scanner, Store store) {
         System.out.println("\n--- СТВОРЕННЯ SMARTPHONE ---");
         try {
             Phone b = inputCommonData(scanner);
@@ -270,18 +248,16 @@ public class Main {
             System.out.print("Чи є NFC (true/false): ");
             boolean nfc = Boolean.parseBoolean(scanner.nextLine());
 
-            phones.add(new SmartPhone(b.getBrand(), b.getModel(), b.getPrice(), b.getYear(), b.getStorage(),
-                    b.getBatteryCapacity(), b.getOperatingSystem(), b.getWeight(), b.getColor(), camera, nfc));
-            System.out.println("Успіх: SmartPhone додано!");
+            int qty = askForQuantity(scanner);
+            store.addNewPhone(new SmartPhone(b.getBrand(), b.getModel(), b.getPrice(), b.getYear(), b.getStorage(),
+                    b.getBatteryCapacity(), b.getOperatingSystem(), b.getWeight(), b.getColor(), camera, nfc), qty);
+            System.out.println("Успіх: SmartPhone додано до магазину!");
         } catch (Exception e) {
             System.out.println("Помилка: " + e.getMessage());
         }
     }
 
-    /**
-     * Створення об'єкта KeypadPhone.
-     */
-    private static void createKeypadPhone(Scanner scanner, ArrayList<Phone> phones) {
+    private static void createKeypadPhone(Scanner scanner, Store store) {
         System.out.println("\n--- СТВОРЕННЯ KEYPADPHONE ---");
         try {
             Phone b = inputCommonData(scanner);
@@ -290,18 +266,17 @@ public class Main {
             System.out.print("Чи є ліхтарик (true/false): ");
             boolean flashlight = Boolean.parseBoolean(scanner.nextLine());
 
-            phones.add(new KeypadPhone(b.getBrand(), b.getModel(), b.getPrice(), b.getYear(), b.getStorage(),
-                    b.getBatteryCapacity(), b.getOperatingSystem(), b.getWeight(), b.getColor(), dualSim, flashlight));
-            System.out.println("Успіх: KeypadPhone додано!");
+            int qty = askForQuantity(scanner);
+            store.addNewPhone(new KeypadPhone(b.getBrand(), b.getModel(), b.getPrice(), b.getYear(), b.getStorage(),
+                    b.getBatteryCapacity(), b.getOperatingSystem(), b.getWeight(), b.getColor(), dualSim, flashlight),
+                    qty);
+            System.out.println("Успіх: KeypadPhone додано до магазину!");
         } catch (Exception e) {
             System.out.println("Помилка: " + e.getMessage());
         }
     }
 
-    /**
-     * Створення об'єкта SatellitePhone.
-     */
-    private static void createSatellitePhone(Scanner scanner, ArrayList<Phone> phones) {
+    private static void createSatellitePhone(Scanner scanner, Store store) {
         System.out.println("\n--- СТВОРЕННЯ SATELLITE PHONE ---");
         try {
             Phone b = inputCommonData(scanner);
@@ -310,18 +285,17 @@ public class Main {
             System.out.print("Довжина антени (см): ");
             double antenna = Double.parseDouble(scanner.nextLine());
 
-            phones.add(new SatellitePhone(b.getBrand(), b.getModel(), b.getPrice(), b.getYear(), b.getStorage(),
-                    b.getBatteryCapacity(), b.getOperatingSystem(), b.getWeight(), b.getColor(), network, antenna));
-            System.out.println("Успіх: SatellitePhone додано!");
+            int qty = askForQuantity(scanner);
+            store.addNewPhone(new SatellitePhone(b.getBrand(), b.getModel(), b.getPrice(), b.getYear(), b.getStorage(),
+                    b.getBatteryCapacity(), b.getOperatingSystem(), b.getWeight(), b.getColor(), network, antenna),
+                    qty);
+            System.out.println("Успіх: SatellitePhone додано до магазину!");
         } catch (Exception e) {
             System.out.println("Помилка: " + e.getMessage());
         }
     }
 
-    /**
-     * Створення об'єкта FoldablePhone.
-     */
-    private static void createFoldablePhone(Scanner scanner, ArrayList<Phone> phones) {
+    private static void createFoldablePhone(Scanner scanner, Store store) {
         System.out.println("\n--- СТВОРЕННЯ FOLDABLE PHONE ---");
         try {
             Phone b = inputCommonData(scanner);
@@ -334,18 +308,16 @@ public class Main {
             System.out.print("Тип механізму: ");
             String mechanism = scanner.nextLine();
 
-            phones.add(new FoldablePhone(b.getBrand(), b.getModel(), b.getPrice(), b.getYear(), b.getStorage(),
+            int qty = askForQuantity(scanner);
+            store.addNewPhone(new FoldablePhone(b.getBrand(), b.getModel(), b.getPrice(), b.getYear(), b.getStorage(),
                     b.getBatteryCapacity(), b.getOperatingSystem(), b.getWeight(), b.getColor(), camera, nfc,
-                    secondScreen, mechanism));
-            System.out.println("Успіх: FoldablePhone додано!");
+                    secondScreen, mechanism), qty);
+            System.out.println("Успіх: FoldablePhone додано до магазину!");
         } catch (Exception e) {
             System.out.println("Помилка: " + e.getMessage());
         }
     }
 
-    /**
-     * Допоміжний метод для вводу спільних атрибутів усіх телефонів.
-     */
     private static Phone inputCommonData(Scanner scanner) {
         System.out.print("Бренд: ");
         String brand = scanner.nextLine();
@@ -369,17 +341,15 @@ public class Main {
         return new Phone(brand, model, price, year, storage, battery, os, weight, color);
     }
 
-    /**
-     * Вивів інформації про всі об'єкти
-     */
-    private static void displayPhones(ArrayList<Phone> phones) {
+    private static void displayPhones(Store store) {
         System.out.println("\n" + "=".repeat(40));
-        System.out.println("--- СПИСОК ТЕЛЕФОНІВ У КОЛЕКЦІЇ ---");
-        if (phones.isEmpty()) {
-            System.out.println("Список порожній.");
+        System.out.println("--- АСОРТИМЕНТ МАГАЗИНУ ---");
+        ArrayList<StoreItem> items = store.getInventory();
+        if (items.isEmpty()) {
+            System.out.println("Магазин порожній.");
         } else {
-            for (int i = 0; i < phones.size(); i++) {
-                System.out.println((i + 1) + ". " + phones.get(i).toString());
+            for (int i = 0; i < items.size(); i++) {
+                System.out.println((i + 1) + ". " + items.get(i).toString());
             }
         }
     }

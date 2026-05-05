@@ -22,5 +22,69 @@
     "weight": 300.0,
     "color": "WHITE",
     "classType": "Phone"
+  },
+  {
+    "cameraMegapixels": 128.0,
+    "hasNFC": true,
+    "brand": "Samsung",
+    "model": "S25",
+    "price": 953.23,
+    "year": 2025,
+    "storage": 128,
+    "batteryCapacity": 7777,
+    "operatingSystem": "ANDROID",
+    "weight": 215.0,
+    "color": "GOLD",
+    "classType": "SmartPhone"
+  },
+  {
+    "cameraMegapixels": 128.0,
+    "hasNFC": true,
+    "brand": "Samsung",
+    "model": "S25",
+    "price": 953.23,
+    "year": 2025,
+    "storage": 128,
+    "batteryCapacity": 7777,
+    "operatingSystem": "ANDROID",
+    "weight": 215.0,
+    "color": "GOLD",
+    "classType": "SmartPhone"
+  },
+  {
+    "brand": "Oppo",
+    "model": "A50",
+    "price": 199.99,
+    "year": 2023,
+    "storage": 64,
+    "batteryCapacity": 6000,
+    "operatingSystem": "ANDROID",
+    "weight": 120.0,
+    "color": "GREEN",
+    "classType": "Phone"
+  },
+  {
+    "brand": "Oppo",
+    "model": "A50",
+    "price": 199.99,
+    "year": 2023,
+    "storage": 64,
+    "batteryCapacity": 6000,
+    "operatingSystem": "ANDROID",
+    "weight": 120.0,
+    "color": "GREEN",
+    "classType": "Phone"
+  },
+  {
+    "brand": "Oppo",
+    "model": "A50",
+    "price": 199.99,
+    "year": 2023,
+    "storage": 64,
+    "batteryCapacity": 6000,
+    "operatingSystem": "ANDROID",
+    "weight": 120.0,
+    "color": "GREEN",
+    "classType": "Phone"
   }
 ]
