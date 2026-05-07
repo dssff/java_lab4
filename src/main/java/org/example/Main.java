@@ -23,7 +23,8 @@ public class Main {
                 System.out.println("1. Пошук об’єкта");
                 System.out.println("2. Створити новий об’єкт");
                 System.out.println("3. Вивести інформацію про всі об’єкти");
-                System.out.println("4. Завершити роботу програми");
+                System.out.println("4. Вивести відсортовану інформацію про всі телефони");
+                System.out.println("5. Завершити роботу програми");
                 System.out.print("Оберіть опцію: ");
 
                 String choice = scanner.nextLine();
@@ -39,11 +40,14 @@ public class Main {
                         displayPhones(store);
                         break;
                     case "4":
+                        displaySortedPhones(store);
+                        break;
+                    case "5":
                         saveDataOnExit(store);
                         running = false;
                         break;
                     default:
-                        System.out.println("Помилка: Невідома опція. Спробуйте 1, 2, 3 або 4.");
+                        System.out.println("Помилка: Невідома опція. Спробуйте від 1 до 5.");
                 }
             } catch (Exception e) {
                 System.out.println("Критична помилка: " + e.getMessage());
@@ -177,33 +181,28 @@ public class Main {
         boolean backToMain = false;
         while (!backToMain) {
             System.out.println("\n--- ОБЕРІТЬ ТИП ОБ'ЄКТА ---");
-            System.out.println("1. Базовий Phone");
-            System.out.println("2. SmartPhone");
-            System.out.println("3. KeypadPhone");
-            System.out.println("4. SatellitePhone");
-            System.out.println("5. FoldablePhone");
+            System.out.println("1. SmartPhone");
+            System.out.println("2. KeypadPhone");
+            System.out.println("3. SatellitePhone");
+            System.out.println("4. FoldablePhone");
             System.out.println("0. Повернутися до головного меню (Скасувати)");
             System.out.print("Вибір: ");
 
             String choice = scanner.nextLine();
             switch (choice) {
                 case "1":
-                    createBasicPhone(scanner, store);
-                    backToMain = true;
-                    break;
-                case "2":
                     createSmartPhone(scanner, store);
                     backToMain = true;
                     break;
-                case "3":
+                case "2":
                     createKeypadPhone(scanner, store);
                     backToMain = true;
                     break;
-                case "4":
+                case "3":
                     createSatellitePhone(scanner, store);
                     backToMain = true;
                     break;
-                case "5":
+                case "4":
                     createFoldablePhone(scanner, store);
                     backToMain = true;
                     break;
@@ -227,17 +226,7 @@ public class Main {
         }
     }
 
-    private static void createBasicPhone(Scanner scanner, Store store) {
-        System.out.println("\n--- СТВОРЕННЯ БАЗОВОГО ТЕЛЕФОНУ ---");
-        try {
-            Phone p = inputCommonData(scanner);
-            int qty = askForQuantity(scanner);
-            store.addNewPhone(p, qty);
-            System.out.println("Успіх: Телефон додано до магазину!");
-        } catch (Exception e) {
-            System.out.println("Помилка при створенні: " + e.getMessage());
-        }
-    }
+    // Метод createBasicPhone видалено, оскільки клас Phone став абстрактним.
 
     private static void createSmartPhone(Scanner scanner, Store store) {
         System.out.println("\n--- СТВОРЕННЯ SMARTPHONE ---");
@@ -318,6 +307,9 @@ public class Main {
         }
     }
 
+    /**
+     * Збирає загальні дані для будь-якого типу телефону.
+     */
     private static Phone inputCommonData(Scanner scanner) {
         System.out.print("Бренд: ");
         String brand = scanner.nextLine();
@@ -325,20 +317,22 @@ public class Main {
         String model = scanner.nextLine();
         System.out.print("Ціна: ");
         double price = Double.parseDouble(scanner.nextLine());
-        System.out.print("Рік випуску (1990-2030): ");
+        System.out.print("Рік випуску: ");
         int year = Integer.parseInt(scanner.nextLine());
-        System.out.print("Пам'ять (ГБ): ");
+        System.out.print("Обсяг пам'яті (ГБ): ");
         int storage = Integer.parseInt(scanner.nextLine());
-        System.out.print("Батарея (мАг): ");
+        System.out.print("Ємність батареї (мАг): ");
         int battery = Integer.parseInt(scanner.nextLine());
-        System.out.print("ОС (ANDROID, IOS, WINDOWS_PHONE, OTHER): ");
+        System.out.print("Операційна система (ANDROID, IOS, WINDOWS_PHONE, OTHER): ");
         OperatingSystem os = OperatingSystem.valueOf(scanner.nextLine().trim().toUpperCase());
         System.out.print("Вага (г): ");
         double weight = Double.parseDouble(scanner.nextLine());
         System.out.print("Колір (BLACK, WHITE, SILVER, GOLD, BLUE, RED, GREEN): ");
         Color color = Color.valueOf(scanner.nextLine().trim().toUpperCase());
 
-        return new Phone(brand, model, price, year, storage, battery, os, weight, color);
+        return new Phone(brand, model, price, year, storage, battery, os, weight, color) {
+            // Анонімний клас для тимчасового зберігання даних
+        };
     }
 
     private static void displayPhones(Store store) {
@@ -351,6 +345,33 @@ public class Main {
             for (int i = 0; i < items.size(); i++) {
                 System.out.println((i + 1) + ". " + items.get(i).toString());
             }
+        }
+    }
+
+    /**
+     * Виводить відсортовану інформацію про всі телефони.
+     */
+    private static void displaySortedPhones(Store store) {
+        System.out.println("\n" + "=".repeat(40));
+        System.out.println("--- ВІДСОРТОВАНИЙ АСОРТИМЕНТ (за брендом та моделлю) ---");
+
+        ArrayList<StoreItem> items = store.getInventory();
+        if (items.isEmpty()) {
+            System.out.println("Магазин порожній.");
+            return;
+        }
+
+        // Створюємо список всіх телефонів для сортування
+        ArrayList<Phone> allPhones = new ArrayList<>();
+        for (StoreItem item : items) {
+            allPhones.add(item.getPhone());
+        }
+
+        // Сортуємо за допомогою Comparable (реалізованого в Phone)
+        allPhones.sort(null);
+
+        for (int i = 0; i < allPhones.size(); i++) {
+            System.out.println((i + 1) + ". " + allPhones.get(i).toString());
         }
     }
 }

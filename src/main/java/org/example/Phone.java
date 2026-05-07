@@ -5,7 +5,7 @@ import java.util.Objects;
 /**
  * Клас, що представляє мобільний телефон.
  */
-public class Phone {
+public abstract class Phone implements Comparable<Phone> {
     private String brand;
     private String model;
     private double price;
@@ -26,17 +26,6 @@ public class Phone {
 
     /**
      * Конструктор для ініціалізації об'єкта Phone.
-     *
-     * @param brand           бренд
-     * @param model           модель
-     * @param price           ціна
-     * @param year            рік випуску
-     * @param storage         обсяг пам'яті
-     * @param batteryCapacity ємність батареї
-     * @param operatingSystem операційна система
-     * @param weight          вага
-     * @param color           колір
-     * @param processor       процесор (агрегація)
      */
     public Phone(String brand, String model, double price, int year, int storage,
             int batteryCapacity, OperatingSystem operatingSystem, double weight, Color color) {
@@ -63,9 +52,6 @@ public class Phone {
 
     /**
      * Конструктор копіювання для створення нового об'єкта на основі існуючого.
-     *
-     * @param other об'єкт класу Phone, який потрібно скопіювати
-     * @throws IllegalArgumentException якщо переданий об'єкт є null
      */
     public Phone(Phone other) {
         if (other == null) {
@@ -148,18 +134,11 @@ public class Phone {
         this.batteryCapacity = batteryCapacity;
     }
 
-    /**
-     * Повертає операційну систему телефону.
-     */
     public OperatingSystem getOperatingSystem() {
         return operatingSystem;
     }
 
-    /**
-     * Встановлює операційну систему телефону.
-     */
     public void setOperatingSystem(OperatingSystem operatingSystem) {
-
         if (operatingSystem == null) {
             throw new IllegalArgumentException("Операційна система не може бути null");
         }
@@ -177,16 +156,10 @@ public class Phone {
         this.weight = weight;
     }
 
-    /**
-     * Повертає колір телефону.
-     */
     public Color getColor() {
         return color;
     }
 
-    /**
-     * Встановлює колір телефону.
-     */
     public void setColor(Color color) {
         if (color == null) {
             throw new IllegalArgumentException("Колір не може бути null");
@@ -232,4 +205,15 @@ public class Phone {
                 '}';
     }
 
+    @Override
+    public int compareTo(Phone other) {
+        if (other == null) {
+            return 1;
+        }
+        int brandCompare = this.brand.compareToIgnoreCase(other.brand);
+        if (brandCompare != 0) {
+            return brandCompare;
+        }
+        return this.model.compareToIgnoreCase(other.model);
+    }
 }

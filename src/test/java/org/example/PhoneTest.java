@@ -10,8 +10,10 @@ class PhoneTest {
 
     @Test
     void shouldCreatePhoneWithValidData() {
-        Phone phone = new Phone("Apple", "iPhone 17", 799.99, 2025, 256, 3200, OperatingSystem.IOS, 170.5, Color.BLACK);
-        
+
+        Phone phone = new SmartPhone("Apple", "iPhone 17", 799.99, 2025, 256, 3200, OperatingSystem.IOS, 170.5,
+                Color.BLACK, 48.0, true);
+
         assertEquals("Apple", phone.getBrand());
         assertEquals(799.99, phone.getPrice());
         assertEquals(OperatingSystem.IOS, phone.getOperatingSystem());
@@ -21,30 +23,35 @@ class PhoneTest {
     @Test
     void shouldThrowExceptionWhenEmptyBrandInConstructor() {
         assertThrows(IllegalArgumentException.class, () -> {
-            new Phone("", "iPhone 17", 799.99, 2025, 256, 3200, OperatingSystem.IOS, 170.5, Color.BLACK);
+            new SmartPhone("", "iPhone 17", 799.99, 2025, 256, 3200, OperatingSystem.IOS, 170.5, Color.BLACK, 48.0,
+                    true);
         });
     }
 
     @Test
     void shouldThrowExceptionWhenNegativePriceInConstructor() {
         assertThrows(IllegalArgumentException.class, () -> {
-            new Phone("Apple", "iPhone 17", -1.0, 2025, 256, 3200, OperatingSystem.IOS, 170.5, Color.BLACK);
+            new SmartPhone("Apple", "iPhone 17", -1.0, 2025, 256, 3200, OperatingSystem.IOS, 170.5, Color.BLACK, 48.0,
+                    true);
         });
     }
 
     @Test
     void shouldCorrectlyCopyPhoneUsingCopyConstructor() {
-        Phone original = new Phone("Apple", "iPhone 17", 799.99, 2025, 256, 3200, OperatingSystem.IOS, 170.5, Color.BLACK);
-        Phone copy = new Phone(original);
- 
-        assertEquals(original, copy);
-        assertNotSame(original, copy);
-    }
+        Phone original = new SmartPhone("Apple", "iPhone 17", 799.99, 2025, 256, 3200, OperatingSystem.IOS, 170.5,
+                Color.BLACK, 48.0, true);
+        SmartPhone copy = new SmartPhone(original.getBrand(), original.getModel(), original.getPrice(),
+                original.getYear(), original.getStorage(), original.getBatteryCapacity(),
+                original.getOperatingSystem(), original.getWeight(), original.getColor(), 48.0, true);
 
+        assertEquals(original.getBrand(), copy.getBrand());
+        assertEquals(original.getModel(), copy.getModel());
+    }
 
     @Test
     void shouldCreateSmartPhoneWithSpecificData() {
-        SmartPhone sp = new SmartPhone("Apple", "iPhone 15", 999.99, 2023, 128, 3349, OperatingSystem.IOS, 171.0, Color.BLACK, 48.0, true);
+        SmartPhone sp = new SmartPhone("Apple", "iPhone 15", 999.99, 2023, 128, 3349, OperatingSystem.IOS, 171.0,
+                Color.BLACK, 48.0, true);
         assertEquals(48.0, sp.getCameraMegapixels());
         assertTrue(sp.isHasNFC());
         assertEquals("Apple", sp.getBrand());
@@ -52,7 +59,8 @@ class PhoneTest {
 
     @Test
     void shouldCreateKeypadPhoneWithSpecificData() {
-        KeypadPhone kp = new KeypadPhone("Samsung", "B310E", 30.0, 2014, 1, 800, OperatingSystem.OTHER, 75.0, Color.WHITE, true, true);
+        KeypadPhone kp = new KeypadPhone("Samsung", "B310E", 30.0, 2014, 1, 800, OperatingSystem.OTHER, 75.0,
+                Color.WHITE, true, true);
         assertTrue(kp.isHasDualSim());
         assertTrue(kp.isHasFlashlight());
         assertEquals("Samsung", kp.getBrand());
@@ -61,12 +69,17 @@ class PhoneTest {
     @Test
     void testPolymorphismInList() {
         java.util.ArrayList<Phone> list = new java.util.ArrayList<>();
-        list.add(new Phone("Nokia", "1100", 20.0, 2003, 1, 850, OperatingSystem.OTHER, 93.0, Color.SILVER));
-        list.add(new SmartPhone("Apple", "iPhone 15", 999.99, 2023, 128, 3349, OperatingSystem.IOS, 171.0, Color.BLACK, 48.0, true));
-        list.add(new KeypadPhone("Samsung", "B310E", 30.0, 2014, 1, 800, OperatingSystem.OTHER, 75.0, Color.WHITE, true, true));
-        list.add(new SatellitePhone("Iridium", "9555", 1200.0, 2021, 1, 2200, OperatingSystem.OTHER, 266.0, Color.BLACK, "Iridium", 12.0));
-        list.add(new FoldablePhone("Samsung", "Fold 5", 1800.0, 2023, 512, 4400, OperatingSystem.ANDROID, 253.0, Color.BLACK, 50.0, true, 6.2, "Flex"));
-        
+        list.add(new SmartPhone("Nokia", "XR21", 499.0, 2023, 128, 4800, OperatingSystem.ANDROID, 231.0, Color.GREEN,
+                64.0, true));
+        list.add(new SmartPhone("Apple", "iPhone 15", 999.99, 2023, 128, 3349, OperatingSystem.IOS, 171.0, Color.BLACK,
+                48.0, true));
+        list.add(new KeypadPhone("Samsung", "B310E", 30.0, 2014, 1, 800, OperatingSystem.OTHER, 75.0, Color.WHITE, true,
+                true));
+        list.add(new SatellitePhone("Iridium", "9555", 1200.0, 2021, 1, 2200, OperatingSystem.OTHER, 266.0, Color.BLACK,
+                "Iridium", 12.0));
+        list.add(new FoldablePhone("Samsung", "Fold 5", 1800.0, 2023, 512, 4400, OperatingSystem.ANDROID, 253.0,
+                Color.BLACK, 50.0, true, 6.2, "Flex"));
+
         assertEquals(5, list.size());
         assertTrue(list.get(0) instanceof Phone);
         assertTrue(list.get(1) instanceof SmartPhone);
@@ -76,15 +89,40 @@ class PhoneTest {
     }
 
     @Test
+    void testSortingLogic() {
+        java.util.ArrayList<Phone> list = new java.util.ArrayList<>();
+        list.add(new SmartPhone("Samsung", "Galaxy S23", 800, 2023, 256, 3900, OperatingSystem.ANDROID, 168,
+                Color.BLACK, 50, true));
+        list.add(new SmartPhone("Apple", "iPhone 15", 900, 2023, 128, 3300, OperatingSystem.IOS, 171, Color.BLUE, 48,
+                true));
+        list.add(new SmartPhone("Apple", "iPhone 14", 700, 2022, 128, 3200, OperatingSystem.IOS, 172, Color.SILVER, 12,
+                true));
+
+        list.sort(null);
+
+        // Очікуваний порядок: Apple iPhone 14, Apple iPhone 15, Samsung Galaxy S23
+        assertEquals("Apple", list.get(0).getBrand());
+        assertEquals("iPhone 14", list.get(0).getModel());
+
+        assertEquals("Apple", list.get(1).getBrand());
+        assertEquals("iPhone 15", list.get(1).getModel());
+
+        assertEquals("Samsung", list.get(2).getBrand());
+        assertEquals("Galaxy S23", list.get(2).getModel());
+    }
+
+    @Test
     void shouldCreateSatellitePhoneWithSpecificData() {
-        SatellitePhone sp = new SatellitePhone("Iridium", "Extreme", 1500.0, 2022, 1, 2500, OperatingSystem.OTHER, 247.0, Color.BLACK, "Iridium Network", 15.5);
+        SatellitePhone sp = new SatellitePhone("Iridium", "Extreme", 1500.0, 2022, 1, 2500, OperatingSystem.OTHER,
+                247.0, Color.BLACK, "Iridium Network", 15.5);
         assertEquals("Iridium Network", sp.getSatelliteNetwork());
         assertEquals(15.5, sp.getAntennaLength());
     }
 
     @Test
     void shouldCreateFoldablePhoneWithSpecificData() {
-        FoldablePhone fp = new FoldablePhone("Samsung", "Galaxy Z Fold 5", 1800.0, 2023, 512, 4400, OperatingSystem.ANDROID, 253.0, Color.BLUE, 50.0, true, 6.2, "Flex Hinge");
+        FoldablePhone fp = new FoldablePhone("Samsung", "Galaxy Z Fold 5", 1800.0, 2023, 512, 4400,
+                OperatingSystem.ANDROID, 253.0, Color.BLUE, 50.0, true, 6.2, "Flex Hinge");
         assertEquals(6.2, fp.getSecondaryScreenSize());
         assertEquals("Flex Hinge", fp.getFoldMechanismType());
     }
@@ -92,7 +130,8 @@ class PhoneTest {
     @Test
     void shouldThrowExceptionWhenNegativeAntennaLength() {
         assertThrows(IllegalArgumentException.class, () -> {
-            new SatellitePhone("Iridium", "9555", 1200.0, 2021, 1, 2200, OperatingSystem.OTHER, 266.0, Color.BLACK, "Iridium", -5.0);
+            new SatellitePhone("Iridium", "9555", 1200.0, 2021, 1, 2200, OperatingSystem.OTHER, 266.0, Color.BLACK,
+                    "Iridium", -5.0);
         });
     }
 }

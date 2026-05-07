@@ -146,7 +146,9 @@ public class FileHandler {
                         Double.parseDouble(parts[10]), Boolean.parseBoolean(parts[11]), Double.parseDouble(parts[12]),
                         parts[13]);
             default:
-                return new Phone(brand, model, price, year, storage, battery, os, weight, color);
+                // Клас Phone тепер абстрактний, тому не можемо створити його екземпляр.
+                // Рядки з невідомим типом пропускаємо.
+                return null;
         }
     }
 
@@ -159,7 +161,7 @@ public class FileHandler {
             JsonElement typeElement = jsonObject.get("classType");
 
             if (typeElement == null)
-                return baseGson.fromJson(j, Phone.class);
+                return null;
 
             String type = typeElement.getAsString();
             switch (type) {
@@ -172,7 +174,7 @@ public class FileHandler {
                 case "FoldablePhone":
                     return baseGson.fromJson(j, FoldablePhone.class);
                 default:
-                    return baseGson.fromJson(j, Phone.class);
+                    return null;
             }
         }
     }
