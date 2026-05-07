@@ -380,31 +380,24 @@ public class Main {
 
         switch (choice) {
             case "1":
-                comparator = new Comparator<Phone>() {
-                    public int compare(Phone p1, Phone p2) {
-                        return Double.compare(p1.getPrice(), p2.getPrice());
-                    }
-                };
+                // Сортування за ціною
+                comparator = (p1, p2) -> Double.compare(p1.getPrice(), p2.getPrice());
                 System.out.println("\n--- СОРТУВАННЯ ЗА ЦІНОЮ ---");
                 break;
 
             case "2":
-                comparator = new Comparator<Phone>() {
-                    public int compare(Phone p1, Phone p2) {
-                        return Integer.compare(p2.getYear(), p1.getYear());
-                    }
-                };
+                // Сортування за роком випуску
+                comparator = (p1, p2) -> Integer.compare(p2.getYear(), p1.getYear());
                 System.out.println("\n--- СОРТУВАННЯ ЗА РОКОМ ВИПУСКУ (НОВІШІ) ---");
                 break;
 
             case "3":
-                comparator = new Comparator<Phone>() {
-                    public int compare(Phone p1, Phone p2) {
-                        int res = p1.getBrand().compareToIgnoreCase(p2.getBrand());
-                        if (res != 0)
-                            return res;
-                        return p1.getModel().compareToIgnoreCase(p2.getModel());
-                    }
+                // Сортування за брендом та моделлю
+                comparator = (p1, p2) -> {
+                    int res = p1.getBrand().compareToIgnoreCase(p2.getBrand());
+                    if (res != 0)
+                        return res;
+                    return p1.getModel().compareToIgnoreCase(p2.getModel());
                 };
                 System.out.println("\n--- СОРТУВАННЯ ЗА НАЗВОЮ ---");
                 break;
