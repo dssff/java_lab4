@@ -13,7 +13,6 @@ class PhoneTest {
 
         Phone phone = new SmartPhone("Apple", "iPhone 17", 799.99, 2025, 256, 3200, OperatingSystem.IOS, 170.5,
                 Color.BLACK, 48.0, true);
-
         assertEquals("Apple", phone.getBrand());
         assertEquals(799.99, phone.getPrice());
         assertEquals(OperatingSystem.IOS, phone.getOperatingSystem());

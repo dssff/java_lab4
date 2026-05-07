@@ -2,6 +2,8 @@ package org.example;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Scanner;
 
 /**
@@ -40,7 +42,7 @@ public class Main {
                         displayPhones(store);
                         break;
                     case "4":
-                        displaySortedPhones(store);
+                        displaySortedPhones(scanner, store);
                         break;
                     case "5":
                         saveDataOnExit(store);
@@ -226,8 +228,6 @@ public class Main {
         }
     }
 
-    // Метод createBasicPhone видалено, оскільки клас Phone став абстрактним.
-
     private static void createSmartPhone(Scanner scanner, Store store) {
         System.out.println("\n--- СТВОРЕННЯ SMARTPHONE ---");
         try {
@@ -349,27 +349,72 @@ public class Main {
     }
 
     /**
-     * Виводить відсортовану інформацію про всі телефони.
+     * Виводить відсортовану інформацію про всі телефони з вибором критерію.
      */
-    private static void displaySortedPhones(Store store) {
-        System.out.println("\n" + "=".repeat(40));
-        System.out.println("--- ВІДСОРТОВАНИЙ АСОРТИМЕНТ (за брендом та моделлю) ---");
-
+    private static void displaySortedPhones(Scanner scanner, Store store) {
         ArrayList<StoreItem> items = store.getInventory();
         if (items.isEmpty()) {
-            System.out.println("Магазин порожній.");
+            System.out.println("\nМагазин порожній.");
             return;
         }
 
-        // Створюємо список всіх телефонів для сортування
+        System.out.println("\n--- ОБЕРІТЬ КРИТЕРІЙ СОРТУВАННЯ ---");
+        System.out.println("1. Сортувати за ціною (від найдешевших)");
+        System.out.println("2. Сортувати за роком випуску (від новіших)");
+        System.out.println("3. Сортувати за назвою (бренд та модель)");
+        System.out.println("0. Повернутися до головного меню");
+        System.out.print("Ваш вибір: ");
+
+        String choice = scanner.nextLine();
+        if (choice.equals("0")) {
+            return;
+        }
+
+        // Створюємо копію списку для сортування
         ArrayList<Phone> allPhones = new ArrayList<>();
         for (StoreItem item : items) {
             allPhones.add(item.getPhone());
         }
 
-        // Сортуємо за допомогою Comparable (реалізованого в Phone)
-        allPhones.sort(null);
+        Comparator<Phone> comparator = null;
 
+        switch (choice) {
+            case "1":
+                comparator = new Comparator<Phone>() {
+                    public int compare(Phone p1, Phone p2) {
+                        return Double.compare(p1.getPrice(), p2.getPrice());
+                    }
+                };
+                System.out.println("\n--- СОРТУВАННЯ ЗА ЦІНОЮ ---");
+                break;
+
+            case "2":
+                comparator = new Comparator<Phone>() {
+                    public int compare(Phone p1, Phone p2) {
+                        return Integer.compare(p2.getYear(), p1.getYear());
+                    }
+                };
+                System.out.println("\n--- СОРТУВАННЯ ЗА РОКОМ ВИПУСКУ (НОВІШІ) ---");
+                break;
+
+            case "3":
+                comparator = new Comparator<Phone>() {
+                    public int compare(Phone p1, Phone p2) {
+                        int res = p1.getBrand().compareToIgnoreCase(p2.getBrand());
+                        if (res != 0)
+                            return res;
+                        return p1.getModel().compareToIgnoreCase(p2.getModel());
+                    }
+                };
+                System.out.println("\n--- СОРТУВАННЯ ЗА НАЗВОЮ ---");
+                break;
+
+            default:
+                System.out.println("Помилка: Невірний вибір.");
+                return;
+        }
+
+        Collections.sort(allPhones, comparator);
         for (int i = 0; i < allPhones.size(); i++) {
             System.out.println((i + 1) + ". " + allPhones.get(i).toString());
         }
