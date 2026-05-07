@@ -10,6 +10,12 @@ import java.util.Scanner;
 public class Main {
 
     public static void main(String[] args) {
+        if (args.length < 1) {
+            System.out.println("Помилка: не вказано шлях до конфігураційного файлу.");
+            return;
+        }
+        DatabaseManager dbManager = new DatabaseManager(args[0]);
+
         // Завантаження даних при старті
         Store store = loadDataOnStartup();
         Scanner scanner = new Scanner(System.in);
@@ -33,7 +39,7 @@ public class Main {
                         handleSearchSubmenu(scanner, store);
                         break;
                     case "2":
-                        handleCreationSubmenu(scanner, store);
+                        handleCreationSubmenu(scanner, store, dbManager);
                         break;
                     case "3":
                         displayPhones(store);
@@ -173,7 +179,7 @@ public class Main {
     /**
      * Відображає підменю вибору типу об'єкта для створення.
      */
-    private static void handleCreationSubmenu(Scanner scanner, Store store) {
+    private static void handleCreationSubmenu(Scanner scanner, Store store, DatabaseManager dbManager) {
         boolean backToMain = false;
         while (!backToMain) {
             System.out.println("\n--- ОБЕРІТЬ ТИП ОБ'ЄКТА ---");
@@ -188,23 +194,23 @@ public class Main {
             String choice = scanner.nextLine();
             switch (choice) {
                 case "1":
-                    createBasicPhone(scanner, store);
+                    createBasicPhone(scanner, store, dbManager);
                     backToMain = true;
                     break;
                 case "2":
-                    createSmartPhone(scanner, store);
+                    createSmartPhone(scanner, store, dbManager);
                     backToMain = true;
                     break;
                 case "3":
-                    createKeypadPhone(scanner, store);
+                    createKeypadPhone(scanner, store, dbManager);
                     backToMain = true;
                     break;
                 case "4":
-                    createSatellitePhone(scanner, store);
+                    createSatellitePhone(scanner, store, dbManager);
                     backToMain = true;
                     break;
                 case "5":
-                    createFoldablePhone(scanner, store);
+                    createFoldablePhone(scanner, store, dbManager);
                     backToMain = true;
                     break;
                 case "0":
@@ -227,19 +233,22 @@ public class Main {
         }
     }
 
-    private static void createBasicPhone(Scanner scanner, Store store) {
+    private static void createBasicPhone(Scanner scanner, Store store, DatabaseManager dbManager) {
         System.out.println("\n--- СТВОРЕННЯ БАЗОВОГО ТЕЛЕФОНУ ---");
         try {
             Phone p = inputCommonData(scanner);
             int qty = askForQuantity(scanner);
             store.addNewPhone(p, qty);
-            System.out.println("Успіх: Телефон додано до магазину!");
+            for (int i = 0; i < qty; i++) {
+                dbManager.insertPhone(p);
+            }
+            System.out.println("Успіх: Телефон додано до магазину та збережено в БД!");
         } catch (Exception e) {
             System.out.println("Помилка при створенні: " + e.getMessage());
         }
     }
 
-    private static void createSmartPhone(Scanner scanner, Store store) {
+    private static void createSmartPhone(Scanner scanner, Store store, DatabaseManager dbManager) {
         System.out.println("\n--- СТВОРЕННЯ SMARTPHONE ---");
         try {
             Phone b = inputCommonData(scanner);
@@ -249,15 +258,19 @@ public class Main {
             boolean nfc = Boolean.parseBoolean(scanner.nextLine());
 
             int qty = askForQuantity(scanner);
-            store.addNewPhone(new SmartPhone(b.getBrand(), b.getModel(), b.getPrice(), b.getYear(), b.getStorage(),
-                    b.getBatteryCapacity(), b.getOperatingSystem(), b.getWeight(), b.getColor(), camera, nfc), qty);
-            System.out.println("Успіх: SmartPhone додано до магазину!");
+            SmartPhone sp = new SmartPhone(b.getBrand(), b.getModel(), b.getPrice(), b.getYear(), b.getStorage(),
+                    b.getBatteryCapacity(), b.getOperatingSystem(), b.getWeight(), b.getColor(), camera, nfc);
+            store.addNewPhone(sp, qty);
+            for (int i = 0; i < qty; i++) {
+                dbManager.insertPhone(sp);
+            }
+            System.out.println("Успіх: SmartPhone додано до магазину та збережено в БД!");
         } catch (Exception e) {
             System.out.println("Помилка: " + e.getMessage());
         }
     }
 
-    private static void createKeypadPhone(Scanner scanner, Store store) {
+    private static void createKeypadPhone(Scanner scanner, Store store, DatabaseManager dbManager) {
         System.out.println("\n--- СТВОРЕННЯ KEYPADPHONE ---");
         try {
             Phone b = inputCommonData(scanner);
@@ -267,16 +280,19 @@ public class Main {
             boolean flashlight = Boolean.parseBoolean(scanner.nextLine());
 
             int qty = askForQuantity(scanner);
-            store.addNewPhone(new KeypadPhone(b.getBrand(), b.getModel(), b.getPrice(), b.getYear(), b.getStorage(),
-                    b.getBatteryCapacity(), b.getOperatingSystem(), b.getWeight(), b.getColor(), dualSim, flashlight),
-                    qty);
-            System.out.println("Успіх: KeypadPhone додано до магазину!");
+            KeypadPhone kp = new KeypadPhone(b.getBrand(), b.getModel(), b.getPrice(), b.getYear(), b.getStorage(),
+                    b.getBatteryCapacity(), b.getOperatingSystem(), b.getWeight(), b.getColor(), dualSim, flashlight);
+            store.addNewPhone(kp, qty);
+            for (int i = 0; i < qty; i++) {
+                dbManager.insertPhone(kp);
+            }
+            System.out.println("Успіх: KeypadPhone додано до магазину та збережено в БД!");
         } catch (Exception e) {
             System.out.println("Помилка: " + e.getMessage());
         }
     }
 
-    private static void createSatellitePhone(Scanner scanner, Store store) {
+    private static void createSatellitePhone(Scanner scanner, Store store, DatabaseManager dbManager) {
         System.out.println("\n--- СТВОРЕННЯ SATELLITE PHONE ---");
         try {
             Phone b = inputCommonData(scanner);
@@ -286,16 +302,20 @@ public class Main {
             double antenna = Double.parseDouble(scanner.nextLine());
 
             int qty = askForQuantity(scanner);
-            store.addNewPhone(new SatellitePhone(b.getBrand(), b.getModel(), b.getPrice(), b.getYear(), b.getStorage(),
-                    b.getBatteryCapacity(), b.getOperatingSystem(), b.getWeight(), b.getColor(), network, antenna),
-                    qty);
-            System.out.println("Успіх: SatellitePhone додано до магазину!");
+            SatellitePhone sp = new SatellitePhone(b.getBrand(), b.getModel(), b.getPrice(), b.getYear(),
+                    b.getStorage(),
+                    b.getBatteryCapacity(), b.getOperatingSystem(), b.getWeight(), b.getColor(), network, antenna);
+            store.addNewPhone(sp, qty);
+            for (int i = 0; i < qty; i++) {
+                dbManager.insertPhone(sp);
+            }
+            System.out.println("Успіх: SatellitePhone додано до магазину та збережено в БД!");
         } catch (Exception e) {
             System.out.println("Помилка: " + e.getMessage());
         }
     }
 
-    private static void createFoldablePhone(Scanner scanner, Store store) {
+    private static void createFoldablePhone(Scanner scanner, Store store, DatabaseManager dbManager) {
         System.out.println("\n--- СТВОРЕННЯ FOLDABLE PHONE ---");
         try {
             Phone b = inputCommonData(scanner);
@@ -309,10 +329,14 @@ public class Main {
             String mechanism = scanner.nextLine();
 
             int qty = askForQuantity(scanner);
-            store.addNewPhone(new FoldablePhone(b.getBrand(), b.getModel(), b.getPrice(), b.getYear(), b.getStorage(),
+            FoldablePhone fp = new FoldablePhone(b.getBrand(), b.getModel(), b.getPrice(), b.getYear(), b.getStorage(),
                     b.getBatteryCapacity(), b.getOperatingSystem(), b.getWeight(), b.getColor(), camera, nfc,
-                    secondScreen, mechanism), qty);
-            System.out.println("Успіх: FoldablePhone додано до магазину!");
+                    secondScreen, mechanism);
+            store.addNewPhone(fp, qty);
+            for (int i = 0; i < qty; i++) {
+                dbManager.insertPhone(fp);
+            }
+            System.out.println("Успіх: FoldablePhone додано до магазину та збережено в БД!");
         } catch (Exception e) {
             System.out.println("Помилка: " + e.getMessage());
         }
