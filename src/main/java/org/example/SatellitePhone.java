@@ -44,12 +44,6 @@ public class SatellitePhone extends Phone {
 
     @Override
     public String toString() {
-        return "SatellitePhone{" +
-                "brand='" + getBrand() + '\'' +
-                ", model='" + getModel() + '\'' +
-                ", network='" + satelliteNetwork + '\'' +
-                ", antenna=" + antennaLength + "cm" +
-                ", price=" + getPrice() +
-                '}';
+        return super.toString() + String.format(" [Мережа: %s, Антена: %.1f см]", satelliteNetwork, antennaLength);
     }
 }

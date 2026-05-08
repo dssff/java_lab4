@@ -73,4 +73,28 @@ public class Store {
         }
         return result;
     }
+
+    /**
+     * Пошук товару за UUID.
+     */
+    /**
+     * Пошук товару за UUID (підтримує повний UUID або його початок).
+     */
+    public StoreItem findPhoneByUuid(String uuidStr) {
+        if (uuidStr == null || uuidStr.trim().isEmpty()) {
+            return null;
+        }
+        
+        String input = uuidStr.trim().toLowerCase();
+        
+        // Спочатку шукаємо точний збіг (якщо введено повний UUID)
+        for (StoreItem item : inventory) {
+            String fullUuid = item.getPhone().getUuid().toString().toLowerCase();
+            if (fullUuid.equals(input) || fullUuid.startsWith(input)) {
+                return item;
+            }
+        }
+        
+        return null;
+    }
 }

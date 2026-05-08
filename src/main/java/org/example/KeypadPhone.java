@@ -38,12 +38,6 @@ public class KeypadPhone extends Phone {
 
     @Override
     public String toString() {
-        return "KeypadPhone{" +
-                "brand='" + getBrand() + '\'' +
-                ", model='" + getModel() + '\'' +
-                ", price=" + getPrice() +
-                ", hasDualSim=" + hasDualSim +
-                ", hasFlashlight=" + hasFlashlight +
-                '}';
+        return super.toString() + String.format(" [Dual SIM: %b, Ліхтарик: %b]", hasDualSim, hasFlashlight);
     }
 }

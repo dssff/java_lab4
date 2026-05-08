@@ -11,6 +11,7 @@
     "operatingSystem": "ANDROID",
     "weight": 215.0,
     "color": "GOLD",
+    "uuid": "6d6c39b1-7c7b-48de-9506-be147db67a2e",
     "classType": "SmartPhone"
   },
   {
@@ -25,6 +26,7 @@
     "operatingSystem": "IOS",
     "weight": 171.0,
     "color": "BLACK",
+    "uuid": "b7e3389a-bce2-4583-8a75-c890b2aee015",
     "classType": "SmartPhone"
   },
   {
@@ -39,6 +41,7 @@
     "operatingSystem": "OTHER",
     "weight": 133.0,
     "color": "BLUE",
+    "uuid": "1b06a020-e4f9-4a5e-aa45-d26817336b80",
     "classType": "KeypadPhone"
   },
   {
@@ -53,13 +56,14 @@
     "operatingSystem": "ANDROID",
     "weight": 187.0,
     "color": "SILVER",
+    "uuid": "d71de3f5-5bd9-4699-bdb7-d3f8252d16a1",
     "classType": "SmartPhone"
   },
   {
-    "cameraMegapixels": 50.0,
-    "hasNFC": true,
     "secondaryScreenSize": 6.2,
     "foldMechanismType": "Flex",
+    "cameraMegapixels": 50.0,
+    "hasNFC": true,
     "brand": "Samsung",
     "model": "Fold 5",
     "price": 1799.0,
@@ -69,6 +73,7 @@
     "operatingSystem": "ANDROID",
     "weight": 253.0,
     "color": "BLACK",
+    "uuid": "b47d3f5f-e461-497f-ac45-55801204c495",
     "classType": "FoldablePhone"
   }
 ]

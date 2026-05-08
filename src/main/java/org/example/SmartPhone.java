@@ -39,14 +39,7 @@ public class SmartPhone extends Phone {
         this.hasNFC = hasNFC;
     }
 
-    @Override
     public String toString() {
-        return "SmartPhone{" +
-                "brand='" + getBrand() + '\'' +
-                ", model='" + getModel() + '\'' +
-                ", price=" + getPrice() +
-                ", cameraMegapixels=" + cameraMegapixels +
-                ", hasNFC=" + hasNFC +
-                '}';
+        return super.toString() + String.format(" [Камера: %.1f МП, NFC: %b]", cameraMegapixels, hasNFC);
     }
 }

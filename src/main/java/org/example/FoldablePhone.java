@@ -46,13 +46,6 @@ public class FoldablePhone extends SmartPhone {
 
     @Override
     public String toString() {
-        return "FoldablePhone{" +
-                "brand='" + getBrand() + '\'' +
-                ", model='" + getModel() + '\'' +
-                ", mainCamera=" + getCameraMegapixels() + "MP" +
-                ", secondScreen=" + secondaryScreenSize + "\"" +
-                ", mechanism='" + foldMechanismType + '\'' +
-                ", price=" + getPrice() +
-                '}';
+        return super.toString() + String.format(" [Другий екран: %.1f\", Механізм: %s]", secondaryScreenSize, foldMechanismType);
     }
 }

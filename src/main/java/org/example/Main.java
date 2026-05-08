@@ -111,6 +111,7 @@ public class Main {
             System.out.println("1. Пошук за брендом");
             System.out.println("2. Пошук за роком випуску");
             System.out.println("3. Пошук за операційною системою");
+            System.out.println("4. Пошук за UUID");
             System.out.println("0. Повернутися до головного меню");
             System.out.print("Вибір: ");
 
@@ -124,6 +125,9 @@ public class Main {
                     break;
                 case "3":
                     searchByOS(scanner, store);
+                    break;
+                case "4":
+                    searchByUuid(scanner, store);
                     break;
                 case "0":
                     backToMain = true;
@@ -161,6 +165,18 @@ public class Main {
             displaySearchResults(results);
         } catch (IllegalArgumentException e) {
             System.out.println("Помилка: Невідома операційна система.");
+        }
+    }
+
+    private static void searchByUuid(Scanner scanner, Store store) {
+        System.out.print("Введіть UUID для пошуку: ");
+        String uuidStr = scanner.nextLine();
+        StoreItem result = store.findPhoneByUuid(uuidStr);
+        if (result == null) {
+            System.out.println("Об'єкт з таким UUID не знайдено або формат UUID некоректний.");
+        } else {
+            System.out.println("\n--- РЕЗУЛЬТАТ ПОШУКУ ЗА UUID ---");
+            System.out.println(result.toString());
         }
     }
 

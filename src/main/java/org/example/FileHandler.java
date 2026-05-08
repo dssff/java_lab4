@@ -88,6 +88,7 @@ public class FileHandler {
     private static String serializeToText(Phone p) {
         StringBuilder sb = new StringBuilder();
         sb.append(p.getClassType()).append(";")
+                .append(p.getUuid().toString()).append(";")
                 .append(p.getBrand()).append(";")
                 .append(p.getModel()).append(";")
                 .append(p.getPrice()).append(";")
@@ -121,35 +122,53 @@ public class FileHandler {
             return null;
 
         String type = parts[0];
-        String brand = parts[1];
-        String model = parts[2];
-        double price = Double.parseDouble(parts[3]);
-        int year = Integer.parseInt(parts[4]);
-        int storage = Integer.parseInt(parts[5]);
-        int battery = Integer.parseInt(parts[6]);
-        OperatingSystem os = OperatingSystem.valueOf(parts[7].trim().toUpperCase());
-        double weight = Double.parseDouble(parts[8]);
-        Color color = Color.valueOf(parts[9].trim().toUpperCase());
+        boolean hasUuid = false;
+        String uuidStr = null;
+        
+        // Перевіряємо, чи є другий елемент UUID (формат: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx)
+        if (parts[1].contains("-") && parts[1].length() > 30) {
+            hasUuid = true;
+            uuidStr = parts[1];
+        }
 
+        int offset = hasUuid ? 1 : 0;
+        String brand = parts[1 + offset];
+        String model = parts[2 + offset];
+        double price = Double.parseDouble(parts[3 + offset]);
+        int year = Integer.parseInt(parts[4 + offset]);
+        int storage = Integer.parseInt(parts[5 + offset]);
+        int battery = Integer.parseInt(parts[6 + offset]);
+        OperatingSystem os = OperatingSystem.valueOf(parts[7 + offset].trim().toUpperCase());
+        double weight = Double.parseDouble(parts[8 + offset]);
+        Color color = Color.valueOf(parts[9 + offset].trim().toUpperCase());
+
+        Phone phone = null;
         switch (type) {
             case "SmartPhone":
-                return new SmartPhone(brand, model, price, year, storage, battery, os, weight, color,
-                        Double.parseDouble(parts[10]), Boolean.parseBoolean(parts[11]));
+                phone = new SmartPhone(brand, model, price, year, storage, battery, os, weight, color,
+                        Double.parseDouble(parts[10 + offset]), Boolean.parseBoolean(parts[11 + offset]));
+                break;
             case "KeypadPhone":
-                return new KeypadPhone(brand, model, price, year, storage, battery, os, weight, color,
-                        Boolean.parseBoolean(parts[10]), Boolean.parseBoolean(parts[11]));
+                phone = new KeypadPhone(brand, model, price, year, storage, battery, os, weight, color,
+                        Boolean.parseBoolean(parts[10 + offset]), Boolean.parseBoolean(parts[11 + offset]));
+                break;
             case "SatellitePhone":
-                return new SatellitePhone(brand, model, price, year, storage, battery, os, weight, color, parts[10],
-                        Double.parseDouble(parts[11]));
+                phone = new SatellitePhone(brand, model, price, year, storage, battery, os, weight, color, parts[10 + offset],
+                        Double.parseDouble(parts[11 + offset]));
+                break;
             case "FoldablePhone":
-                return new FoldablePhone(brand, model, price, year, storage, battery, os, weight, color,
-                        Double.parseDouble(parts[10]), Boolean.parseBoolean(parts[11]), Double.parseDouble(parts[12]),
-                        parts[13]);
+                phone = new FoldablePhone(brand, model, price, year, storage, battery, os, weight, color,
+                        Double.parseDouble(parts[10 + offset]), Boolean.parseBoolean(parts[11 + offset]), Double.parseDouble(parts[12 + offset]),
+                        parts[13 + offset]);
+                break;
             default:
-                // Клас Phone тепер абстрактний, тому не можемо створити його екземпляр.
-                // Рядки з невідомим типом пропускаємо.
                 return null;
         }
+        
+        if (phone != null && hasUuid) {
+            phone.setUuid(java.util.UUID.fromString(uuidStr));
+        }
+        return phone;
     }
 
     private static class PhoneAdapter implements JsonDeserializer<Phone> {

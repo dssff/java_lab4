@@ -1,11 +1,13 @@
 package org.example;
 
+import java.util.UUID;
+
 import java.util.Objects;
 
 /**
  * Клас, що представляє мобільний телефон.
  */
-public abstract class Phone implements Comparable<Phone> {
+public abstract class Phone implements Comparable<Phone>, Identifiable {
     private String brand;
     private String model;
     private double price;
@@ -15,6 +17,7 @@ public abstract class Phone implements Comparable<Phone> {
     private OperatingSystem operatingSystem;
     private double weight;
     private Color color;
+    private UUID uuid;
     private String classType;
 
     /**
@@ -22,6 +25,7 @@ public abstract class Phone implements Comparable<Phone> {
      */
     public Phone() {
         this.classType = "Phone";
+        this.uuid = UUID.randomUUID();
     }
 
     /**
@@ -40,6 +44,7 @@ public abstract class Phone implements Comparable<Phone> {
         setWeight(weight);
         setColor(color);
         this.classType = "Phone";
+        this.uuid = UUID.randomUUID();
     }
 
     public String getClassType() {
@@ -66,6 +71,7 @@ public abstract class Phone implements Comparable<Phone> {
         this.operatingSystem = other.operatingSystem;
         this.weight = other.weight;
         this.color = other.color;
+        this.uuid = other.uuid;
     }
 
     public String getBrand() {
@@ -167,7 +173,6 @@ public abstract class Phone implements Comparable<Phone> {
         this.color = color;
     }
 
-    @Override
     public boolean equals(Object o) {
         if (this == o)
             return true;
@@ -185,27 +190,28 @@ public abstract class Phone implements Comparable<Phone> {
                 Objects.equals(color, phone.color);
     }
 
-    @Override
     public int hashCode() {
         return Objects.hash(brand, model, price, year, storage, batteryCapacity, operatingSystem, weight, color);
     }
 
-    @Override
     public String toString() {
-        return "Phone{" +
-                "brand='" + brand + '\'' +
-                ", model='" + model + '\'' +
-                ", price=" + price +
-                ", year=" + year +
-                ", storage=" + storage +
-                ", batteryCapacity=" + batteryCapacity +
-                ", operatingSystem='" + operatingSystem + '\'' +
-                ", weight=" + weight +
-                ", color='" + color + '\'' +
-                '}';
+        return String.format(
+                "[%s] %s %s (Ціна: %.2f, Рік: %d, Пам'ять: %d ГБ, Батарея: %d мАг, OS: %s, Вага: %.1f г, Колір: %s)",
+                uuid.toString().substring(0, 8), brand, model, price, year, storage, batteryCapacity, operatingSystem,
+                weight, color);
     }
 
-    @Override
+    public UUID getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(UUID uuid) {
+        if (uuid == null) {
+            throw new IllegalArgumentException("UUID не може бути null");
+        }
+        this.uuid = uuid;
+    }
+
     public int compareTo(Phone other) {
         if (other == null) {
             return 1;
